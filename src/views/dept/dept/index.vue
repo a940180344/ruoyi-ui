@@ -92,6 +92,8 @@
         <el-form-item label="工作室简介" prop="introduction">
           <el-input v-model="form.introduction" placeholder="请输入工作室简介" />
         </el-form-item>
+
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -133,25 +135,75 @@
             <el-input v-model="studentForm.studentId"  disabled/>
           </el-form-item>
         </el-col>
-
-        <el-col >
           <el-form-item label="学习情况" >
             <el-input
-              type="textarea" :rows="3"  placeholder="请输入学习情况"/>
+              type="textarea" :rows="2" v-model="studentForm.reason"  placeholder="请输入学习情况"/>
           </el-form-item>
-        </el-col>
           <el-form-item label="特长说明" >
             <el-input
-              type="textarea" :rows="3"  placeholder="请输入特长说明""/>
+              type="textarea" :rows="2" v-model="studentForm.reason"  placeholder="请输入特长说明"/>
           </el-form-item>
+
+        <el-form-item label="掌握技能1" prop="field102" style="float: left">
+        <el-col :span="22" >
+          <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
+          </el-input>
+        </el-col>
+        </el-form-item>
+        <el-col :span="12">
+        <el-form-item  label="滑块" prop="field101">
+          <el-slider :max='100' :step='1'></el-slider>
+        </el-form-item>
+        </el-col>
+          <el-form-item prop="field101" v-show="er != true">
+            <el-button  @click="er = true" type="primary" icon="el-icon-plus"></el-button>
+          </el-form-item>
+
+        <div v-show="er">
+          <el-form-item label="掌握技能2" prop="field102" style="float: left">
+            <el-col :span="22" >
+              <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
+              </el-input>
+            </el-col>
+          </el-form-item>
+          <el-col :span="12">
+            <el-form-item  label="滑块" prop="field101">
+              <el-slider :max='100' :step='1'></el-slider>
+            </el-form-item>
+          </el-col>
+            <el-form-item prop="field101" v-show="san != true">
+              <el-button  @click="san = true" type="primary" icon="el-icon-plus"></el-button>
+            </el-form-item>
+        </div>
+
+        <div v-show = "san">
+          <el-form-item label="掌握技能1" prop="field102" style="float: left">
+            <el-col :span="22" >
+              <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
+              </el-input>
+            </el-col>
+          </el-form-item>
+          <el-col :span="12">
+            <el-form-item  label="滑块" prop="field101">
+              <el-slider :max='100' :step='1'></el-slider>
+            </el-form-item>
+          </el-col>
+<!--          <el-col :span="2" style="margin-left: -75px">-->
+<!--            <el-form-item prop="field101">-->
+<!--              <el-button type="primary" icon="el-icon-plus"></el-button>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+        </div>
+
           <el-form-item label="学习方向和期望" >
             <el-input
-              type="textarea" :rows="3" v-model="studentForm.reason"  placeholder="请输入学习方向和期望"/>
+              type="textarea" :rows="2" v-model="studentForm.reason"  placeholder="请输入学习方向和期望"/>
           </el-form-item>
 
         <el-form-item label="个人简介" >
-          <el-input type="textarea" :rows="3" v-model="studentForm.reason" placeholder="请输入个人简介" />
+          <el-input type="textarea" :rows="2" v-model="studentForm.reason" placeholder="请输入个人简介" />
         </el-form-item>
+
         <el-form-item label="上传附件" prop="field102" required>
           <el-upload ref="field102" :file-list="field102fileList" :action="field102Action"
                      :before-upload="field102BeforeUpload">
@@ -174,6 +226,8 @@ export default {
   name: "Dept",
   data() {
     return {
+      er:false,
+      san:false,
       // 遮罩层
       loading: true,
       // 选中数组
