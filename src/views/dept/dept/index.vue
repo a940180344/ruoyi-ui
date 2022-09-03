@@ -144,6 +144,7 @@
               type="textarea" :rows="2" v-model="studentForm.reason"  placeholder="请输入特长说明"/>
           </el-form-item>
 
+
         <el-form-item label="掌握技能1" prop="field102" style="float: left">
         <el-col :span="22" >
           <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
