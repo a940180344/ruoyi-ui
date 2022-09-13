@@ -156,7 +156,7 @@
         </el-col>
         <el-form-item label="特长说明" >
           <el-input
-            type="textarea" :rows="3"  placeholder="请输入特长说明""/>
+            type="textarea" :rows="3"  placeholder="请输入特长说明"/>
         </el-form-item>
         <el-form-item label="学习方向和期望" >
           <el-input

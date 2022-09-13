@@ -10,7 +10,7 @@ NProgress.configure({ showSpinner: false })
 
 
 
-const whiteList = ['/login', '/auth-redirect','/essaylogin', '/bind', '/register','/loginshouye']
+const whiteList = ['/login', '/auth-redirect','/essaylogin', '/bind', '/register','/loginshouye','/studiodetail']
 
 router.beforeEach((to, from, next) => {
   NProgress.start()

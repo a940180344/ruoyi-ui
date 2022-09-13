@@ -1,5 +1,8 @@
 <template>
   <div id="login">
+    <el-button @click="dianji(5)">
+      dianwoowowo
+    </el-button>
     <el-container>
 
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
@@ -34,10 +37,7 @@
 
         <div class="right-1">
           <el-menu-item index="4" class="right-1">
-
             <i class="el-icon-message" style="color: white" ></i>
-
-
           </el-menu-item>
         </div>
 
@@ -240,9 +240,7 @@ el-icon-sort-up"></i><span style="font-weight:900;font-size:large">工作室动�
   </span>
     </el-dialog>
 
-    <!--  <el-button @click="dianji(34)">-->
-    <!--    dianwoowowo-->
-    <!--  </el-button>-->
+
   </div>
 </template>
 
@@ -250,7 +248,7 @@ el-icon-sort-up"></i><span style="font-weight:900;font-size:large">工作室动�
 import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
-
+import {listEssayFabu} from '@/api/essay/essayFabu'
 export default {
   name: "Login",
   data() {
@@ -311,8 +309,13 @@ export default {
   created() {
     this.getCode();
     this.getCookie();
+    this.getList();
   },
   methods: {
+    async getList(){
+      const list = await this.listEssayFabu(quam);
+      console.log(list)
+    },
     tiaohzuan(){
       this.$router.push({
         path: '/loginshouye',
@@ -321,7 +324,7 @@ export default {
     dianji(id){
       this.$router.push({
         path: '/essaylogin',
-        query: { id: id },
+        query: { essayId: id },
       })
     },
     getCode(){

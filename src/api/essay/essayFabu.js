@@ -1,9 +1,10 @@
 import request from '@/utils/request'
+import es from "element-ui/src/locale/lang/es";
 
 // 查询发布文章列表
 export function listEssayFabu(query) {
   return request({
-    url: '/essay/essayFabu/list',
+    url: '/essay/essayFabu/list' ,
     method: 'get',
     params: query
   })
@@ -13,9 +14,11 @@ export function listEssayFabu(query) {
 export function getEssayFabu(essayId) {
   return request({
     url: '/essay/essayFabu/' + essayId,
-    method: 'get'
+    method: 'get',
   })
 }
+
+
 
 // 新增发布文章
 export function addEssayFabu(data) {

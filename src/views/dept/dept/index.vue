@@ -37,7 +37,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="deptList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="deptList" @row-dblclick="DetailStudio" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="部门id" align="center" prop="deptId" />
       <el-table-column label="部门名称" align="center" prop="deptName" />
@@ -145,50 +145,71 @@
           </el-form-item>
 
 
-        <el-form-item label="掌握技能1" prop="field102" style="float: left">
-        <el-col :span="22" >
-          <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
+        <el-form-item label="掌握技能1" prop="field102" >
+        <el-col :span="6" >
+          <el-form-item >
+            <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
           </el-input>
+          </el-form-item>
         </el-col>
-        </el-form-item>
-        <el-col :span="12">
+        <el-col :span="14">
         <el-form-item  label="滑块" prop="field101">
           <el-slider :max='100' :step='1'></el-slider>
         </el-form-item>
         </el-col>
+        <el-col :span="2" style="float: right">
           <el-form-item prop="field101" v-show="er != true">
             <el-button  @click="er = true" type="primary" icon="el-icon-plus"></el-button>
           </el-form-item>
+        </el-col>
+        </el-form-item>
 
         <div v-show="er">
-          <el-form-item label="掌握技能2" prop="field102" style="float: left">
-            <el-col :span="22" >
-              <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
-              </el-input>
+          <el-form-item label="掌握技能2" prop="field102" >
+            <el-col :span="6" >
+              <el-form-item >
+                <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="14">
+              <el-form-item  label="滑块" prop="field101">
+                <el-slider :max='100' :step='1'></el-slider>
+              </el-form-item>
+            </el-col>
+            <el-col :span="2" style="float: right">
+              <el-form-item prop="field101" v-show="san != true">
+                <el-button  @click="san = true" type="primary" icon="el-icon-plus"></el-button>
+              </el-form-item>
             </el-col>
           </el-form-item>
-          <el-col :span="12">
-            <el-form-item  label="滑块" prop="field101">
-              <el-slider :max='100' :step='1'></el-slider>
-            </el-form-item>
-          </el-col>
-            <el-form-item prop="field101" v-show="san != true">
-              <el-button  @click="san = true" type="primary" icon="el-icon-plus"></el-button>
-            </el-form-item>
         </div>
 
         <div v-show = "san">
-          <el-form-item label="掌握技能1" prop="field102" style="float: left">
-            <el-col :span="22" >
-              <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
-              </el-input>
+          <el-form-item label="掌握技能3" prop="field102" >
+            <el-col :span="6" >
+              <el-form-item >
+                <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="14">
+              <el-form-item  label="滑块" prop="field101">
+                <el-slider :max='100' :step='1'></el-slider>
+              </el-form-item>
+            </el-col>
+            <el-col :span="2" style="float: right">
+              <el-form-item prop="field101" v-show="er != true">
+                <el-button  @click="er = true" type="primary" icon="el-icon-plus"></el-button>
+              </el-form-item>
             </el-col>
           </el-form-item>
-          <el-col :span="12">
-            <el-form-item  label="滑块" prop="field101">
-              <el-slider :max='100' :step='1'></el-slider>
-            </el-form-item>
-          </el-col>
+<!--            <el-col :span="2" style="float: right">-->
+<!--              <el-form-item prop="field101" v-show="er != true">-->
+<!--                <el-button  @click="er = true" type="primary" icon="el-icon-plus"></el-button>-->
+<!--              </el-form-item>-->
+<!--            </el-col>-->
+<!--          </el-form-item>-->
 <!--          <el-col :span="2" style="margin-left: -75px">-->
 <!--            <el-form-item prop="field101">-->
 <!--              <el-button type="primary" icon="el-icon-plus"></el-button>-->
@@ -281,6 +302,17 @@ export default {
     this.getList();
   },
   methods: {
+    DetailStudio(row){
+      const deptId = row.deptId;
+      this.$router.push({
+        path: '/studio/studiodetail',
+        query: { studioId: deptId },
+      })
+    },
+
+
+
+
     /** 查询部门列表 */
     async getList() {
       this.loading = true;

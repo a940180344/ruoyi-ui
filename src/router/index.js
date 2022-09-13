@@ -63,7 +63,11 @@ export const constantRoutes = [
     component: () => import('@/views/loginshouye'),
     hidden: true
   },
-
+  {
+    path: '/studiodetail',
+    component: () => import('@/views/studio/studioDetail/index'),
+    hidden: true
+  },
   {
     path: '/register',
     component: () => import('@/views/register'),
