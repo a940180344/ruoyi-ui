@@ -18,5 +18,6 @@ const getters = {
   studentID:state => state.user.studentID,
   deptID: state => state.user.deptID,
   deptName: state => state.user.deptName,
+  userIn: state => state.user.userIn,
 }
 export default getters

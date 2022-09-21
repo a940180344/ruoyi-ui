@@ -41,6 +41,9 @@
           <router-link to="/user/profile">
             <el-dropdown-item>个人中心</el-dropdown-item>
           </router-link>
+          <router-link to="/applications">
+            <el-dropdown-item>历史申请</el-dropdown-item>
+          </router-link>
           <el-dropdown-item @click.native="setting = true">
             <span>布局设置</span>
           </el-dropdown-item>

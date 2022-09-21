@@ -9,38 +9,76 @@
             fixed
             onlySameLevelCanDrag
             hightRowChange
+
             border>
           </dragTreeTable>
+          <el-button @click="newRow" type="primary">新增一行</el-button>
           <div style="float: right">
-            <el-button @click="newRow">新增一行</el-button>
-            <el-button>提交</el-button>
+
+            <el-button @click="setProcess" type="warning">提交</el-button>
           </div>
         </el-tab-pane>
       </el-tabs>
     </el-card>
+
+
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <div class="block">
+        <span class="demonstration"><strong>选择流程控制对象：</strong></span>
+        <el-cascader
+          v-model="value"
+          :options="options"
+          :props="{ value: 'userId',label: 'nickName',children: 'children'}"
+          ref="cascaderAddr"
+          @change="handleChange"></el-cascader>、
+
+        <div class="demo-input-suffix">
+          <Strong>菜单流程名：</Strong>
+          <el-input
+            placeholder="请输入内容"
+            style="width: 220px;margin-top: 10px;margin-left: 40px"
+            v-model="caiDan">
+          </el-input>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogProcess()">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import dragTreeTable from "drag-tree-table";
+import {dictionaryApplication,getByid,updataApplication,getByName,roleJiaoWu} from  "@/api/applications/process"
 export default {
   name: "app",
   data() {
     return {
-      processName:[{
-          name:'工作室纳新流程',
-          id:0
-        },
-        {
-          name:'工作室创建流程',
-          id:1
-        },
-        {
-          name:'工作室销毁流程',
-          id:2
-        }
-      ],
-      activeTab: '工作室纳新流程',
+      caiDan:'',
+      props: { multiple: true },
+      value: [],
+      options: [{
+          nickName: '人工智能学院',
+          deptId: '1999',
+          children: []
+
+      },{
+          nickName: '法学院',
+          deptId:'2000',
+          children: []
+      }],
+
+      dialogVisible: false,
+      processName:'',//工作室流程字典
+      activeTab: '',
+      activeId:'',
       treeData: {
         columns: [
           {
@@ -94,57 +132,94 @@ export default {
           },
         ],
         lists:  [
-          {
-            "id":0,
-            "parent_id":0,
-            "order":0,
-            "name":"教务老师审批",
-            "uri":"/masd/ds",
-            "open":true,
-          },
-          {
-            "id":1,
-            "parent_id":0,
-            "order":1,
-            "name":"工作室老师审批",
-            "uri":"/masd/ds",
-            "open":true,
-            "lists":[]
-          },
-          {
-            "id":2,
-            "parent_id":0,
-            "order":2,
-            "name":"工作室老师审批2",
-            "uri":"/masd/ds",
-            "open":true,
-            "lists":[]
-          }
         ]
-      }
+      },
+      newRows:{
+        id:'',
+        host_id:0,
+        order:'',
+        name:'',
+        uri:"/masd/ds",
+        open:true,
+        lists:[]
+      },
+      jiaoWuData:''
     };
   },
+  watch:{
+    async activeTab(newValue, oldValue){
+      if(oldValue == '') return;
+      for (const item of this.processName) {
+        if(item.name == newValue){
+          this.activeId = item.id;
+        }
+      }
+        const list = await  getByid(this.activeId)
+      this.treeData.lists = list.data
+    }
+  },
   created() {
-
+      this.getList()
   },
   components: {
     dragTreeTable
   },
   methods: {
+    async  getList(){
+        const processData = await dictionaryApplication();
+        this.processName  = processData.data
+        this.activeTab = processData.data[0].name;
+
+        const list = await getByid(processData.data[0].id)
+        this.treeData.lists = list.data;
+
+        const dataJiao = await roleJiaoWu();
+        this.jiaoWuData = dataJiao.data;
+
+
+        console.log(list)
+    },
+
     onTreeDataChange(list) {
       this.treeData.lists = list;
     },
     newRow(){
+      this.dialogVisible = true;
+      for (const jiaoWu of this.jiaoWuData) {
+        let deptId = jiaoWu.userName.substring(0,4);
+        for (const option of this.options) {
+          console.log(jiaoWu)
+          if(option.deptId == deptId){
+            option.children.push(jiaoWu);
+            continue;
+          }
+        }
+      }
 
-      this.treeData.lists.push({
-        "id":this.treeData.lists.length,
-        "parent_id":0,
-        "order":this.treeData.lists.length,
-        "name":"工作室老师审批"+this.treeData.lists.length,
-        "uri":"/masd/ds",
-        "open":true,
-        "lists":[]
+    },
+    setProcess(){
+      updataApplication(this.treeData.lists).then(response => {
+        this.$modal.msgSuccess("修改成功");
       })
+      this.getList();
+    },
+
+    dialogProcess(){
+
+      let length = this.treeData.lists.length
+      let userId
+      let row = {
+        id:length,
+        host_id:this.treeData.lists[0].hostId,
+        order:length,
+        name:this.caiDan,
+        userId: this.value[1],
+      }
+
+
+
+      this.treeData.lists.push(row)
+      this.dialogVisible = false;
     }
   },
 };
