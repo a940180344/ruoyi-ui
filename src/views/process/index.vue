@@ -30,13 +30,14 @@
       :before-close="handleClose">
       <div class="block">
         <span class="demonstration"><strong>选择流程控制对象：</strong></span>
-        <el-cascader
-          v-model="value"
-          :options="options"
-          :props="{ value: 'userId',label: 'nickName',children: 'children'}"
-          ref="cascaderAddr"
-          @change="handleChange"></el-cascader>、
-
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
         <div class="demo-input-suffix">
           <Strong>菜单流程名：</Strong>
           <el-input
@@ -65,14 +66,14 @@ export default {
       props: { multiple: true },
       value: [],
       options: [{
-          nickName: '人工智能学院',
-          deptId: '1999',
-          children: []
-
-      },{
-          nickName: '法学院',
-          deptId:'2000',
-          children: []
+        value: '104',
+        label: '教务管理'
+      }, {
+        value: '105',
+        label: '院长'
+      }, {
+        value: '106',
+        label: '副院长'
       }],
 
       dialogVisible: false,
@@ -173,8 +174,14 @@ export default {
         const list = await getByid(processData.data[0].id)
         this.treeData.lists = list.data;
 
-        const dataJiao = await roleJiaoWu();
-        this.jiaoWuData = dataJiao.data;
+
+        this.jiaoWuData = [{
+          "教务管理":104
+        },{
+          "院长":105
+        },{
+          "副院长":106
+        }];
 
 
         console.log(list)
@@ -213,7 +220,7 @@ export default {
         host_id:this.treeData.lists[0].hostId,
         order:length,
         name:this.caiDan,
-        userId: this.value[1],
+        roleId: this.value,
       }
 
 

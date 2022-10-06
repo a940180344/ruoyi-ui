@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import { listStio,addStio } from "@/api/dept/stuPcosee";
+import { listStio,addStio ,getInfoList} from "@/api/dept/stuPcosee";
+import {roleJiaoWu} from "@/api/applications/process"
 import TabPane from './tabpanes/student/TabPane'
 import Timeline from './tabpanes/teacher/Timeline'
 export default {
@@ -62,7 +63,7 @@ export default {
   },
   methods: {
     async getList(){
-      const studioDate = await listStio();
+      const studioDate = await getInfoList();
       this.List = studioDate.data
     },
     showCreatedTimes() {

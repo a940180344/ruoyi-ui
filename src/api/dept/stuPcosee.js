@@ -9,13 +9,13 @@ export function listStio(data) {
   })
 }
 
-// // 查询studio详细
-// export function getStio(id) {
-//   return request({
-//     url: '/studio/stio/' + id,
-//     method: 'get'
-//   })
-// }
+// 查询studio详细
+export function getStudioList(id) {
+  return request({
+    url: '/studio/application/info',
+    method: 'get'
+  })
+}
 
 // 新增studio
 export function addStio(data) {
