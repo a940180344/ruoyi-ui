@@ -4,7 +4,7 @@
     <el-alert :closable="false" style="width:200px;display:inline-block;vertical-align: middle;margin-left:30px;" title="Tab with keep-alive" type="success" />
 
     <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
-      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
+      <el-tab-pane v-for="item in tabMapOptions"  :label="item.label" :name="item.key">
         <keep-alive>
           <tab-pane v-if="activeName==item.key" :type="item.key" @create="showCreatedTimes" />
         </keep-alive>
@@ -12,7 +12,7 @@
     </el-tabs>
 
     <el-tabs v-model="activeTea" style="margin-top:15px;" type="border-card">
-      <el-tab-pane v-for="item in tabTeaOptions" :key="item.key" :label="item.label" :name="item.key">
+      <el-tab-pane v-for="item in tabTeaOptions"  :label="item.label" :name="item.key">
         <keep-alive>
           <timeline />
         </keep-alive>
@@ -45,7 +45,8 @@ export default {
       activeName: 'CN',
       createdTimes: 0,
       activeTea:'CN',
-      List:''
+      List:'',
+      fujian:''
     }
   },
   watch: {
@@ -65,6 +66,8 @@ export default {
     async getList(){
       const studioDate = await getInfoList();
       this.List = studioDate.data
+
+
     },
     showCreatedTimes() {
       this.createdTimes = this.createdTimes + 1

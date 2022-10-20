@@ -6,6 +6,7 @@ import errorCode from '@/utils/errorCode'
 import { tansParams, blobValidate } from "@/utils/ruoyi";
 import cache from '@/plugins/cache'
 import { saveAs } from 'file-saver'
+import user from '@/store/modules/user'
 
 let downloadLoadingInstance;
 // 是否显示重新登录
@@ -153,6 +154,15 @@ export function download(url, params, filename) {
     Message.error('下载文件出现错误，请联系管理员！')
     downloadLoadingInstance.close();
   })
+}
+
+// 附件下载方法
+export function downloadFujian( fujian ) {
+  console.log("1")
+  let fujians = fujian.split(",")
+  for (const argument of fujians) {
+    window.open(user.state.serverAddress + argument)
+  }
 }
 
 export default service

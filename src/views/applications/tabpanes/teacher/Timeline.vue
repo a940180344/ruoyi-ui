@@ -1,52 +1,130 @@
 <template>
   <div class="block">
     <el-timeline>
-      <el-timeline-item v-for="(item) of list" :key="item.appOrder" :timestamp="item.CreateTime" placement="top">
+      <el-timeline-item v-for="(item) of list" :timestamp="item.CreateTime" placement="top">
         <el-card>
-          <strong v-if="item.start != '拒绝'" style="color: green;font-size: larger">{{ item.start }}</strong>
+          <strong v-if="item.start == '通过'" style="color: green;font-size: larger">{{ item.start }}</strong>
           <strong v-if="item.start == '拒绝'" style="color: red;font-size: larger">{{ item.start }}</strong>
+          <strong v-if="item.start == '驳回'" style="color: chocolate;font-size: larger">
+              {{ item.start }}
+            <el-button size="mini" type="primary" @click="sQing(item)">重新发起申请</el-button>
+          </strong>
 
-          <p><strong> 审批人:</strong> {{ item.stioAppover }}</p>
-          <div v-if="item.content != ''">
-            <p style="color: red">{{item.stioOpinion}}</p>
+          <strong v-if="item.start == '协商'" style="color: cyan;font-size: larger">
+            {{ item.start }}
+            <el-button size="mini" type="primary" @click="addXs(item)">查 看</el-button>
+          </strong>
+
+          <p><strong style="color:rebeccapurple"> 审批人:</strong> {{ item.stioAppover }}</p>
+          <div v-if="item.stioOpinion != null">
+            <p style="color: red">拒绝理由：{{item.stioOpinion}}</p>
           </div>
-          <strong>{{item.time}}</strong>
+          <p><strong>申请人：{{item.stioTeacher}}</strong></p>
+          <p><strong>工作室名：{{item.stioName}}</strong></p>
+          <p><strong>附件：</strong>  <el-button @click="download(item.stioReason)">点击下载</el-button></p>
+          <p><strong>学院：{{item.stioAcademy}}</strong></p>
+          <strong>协商：<el-button size="mini" type="primary" @click="xieShan(item)"> 协商 记录</el-button></strong>
         </el-card>
       </el-timeline-item>
     </el-timeline>
+
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="修改内容(审批人)" prop="xsContxtApper" >
+          <el-input v-model="form.xsContxtApper" placeholder="请输入修改内容(审批人)" disabled />
+        </el-form-item>
+        <el-form-item label="协商文件添加">
+          <file-upload v-model="form.xsFile"/>
+        </el-form-item>
+        <el-form-item label="其他说明" prop="xsContxtTeacher">
+          <el-input v-model="form.xsContxtTeacher" placeholder="其他说明" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">提 交</el-button>
+        <el-button @click="open = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :title="title" :visible.sync="Xieopen" width="800px" append-to-body>
+      <el-timeline>
+        <el-timeline-item v-for="(item) of stioList" :key="item.xsId" :timestamp="item.createTime" placement="top">
+          <el-card>
+             <div v-if="item.xsContxtApper != null">审批人： <el-input v-model="item.xsContxtApper" placeholder="请输入修改内容(审批人)" /></div>
+            <br>
+             <div  v-if="item.xsContxtTeacher != null">附件： <el-button size="mini" type="primary" @click="downloadFujian(item.xsFile)" >点击 下载</el-button></div>
+            <br>
+
+            <div v-if="item.xsContxtTeacher != null">提交人： <el-input v-model="item.xsContxtTeacher" placeholder="请输入修改内容(提交人)" /></div>
+
+          </el-card>
+        </el-timeline-item>
+      </el-timeline>
+    </el-dialog>
+
+
   </div>
 </template>
 
 <script>
 import { listStio,addStio ,getStudioList} from "@/api/dept/stuPcosee";
-import {roleJiaoWu} from "@/api/applications/process";
+import { mapGetters } from 'vuex'
+import { listXs, getXs, delXs, addXs, updateXs } from "@/api/applications/xs/xs";
+import {roleJiaoWu,studioAppInfo} from "@/api/applications/process";
+import {downloadFujian} from "@/utils/request";
 export default {
 
   data() {
     return {
+      rules: {
+
+      },
+      Xieopen:false,
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 总条数
+      total: 0,
+      // 协商表格数据
+      xsList: [],
+      // 弹出层标题
+      title: "",
+      // 是否显示弹出层
+      open: false,
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        id: null,
+        hostId: null,
+        xsContxtApper: null,
+        xsFile: null,
+        xsContxtTeacher: null,
+      },
+      // 表单参数
+      form: {},
+      stioList:[
+    {
+      "xsId": 1,
+      "id": 29,
+      "hostId": 42,
+      "xsContxtApper": "文件呢？",
+      "xsFile": "0.txt",
+      "xsContxtTeacher": null,
+      "createTime": "2022-10-14T00:46:46.000+08:00"
+    }
+  ],
       timeline: [
-        {
-          timestamp: '教秘审批',
-          title: '审批通过',
-          prople:'审批人：linxxx ',
-          time:'2019/4/20 20:46',
-          content: ''
-        },
-        {
-          timestamp: '院级审批',
-          title: '审批通过',
-          prople:'审批人：linxxx ',
-          time:'2019/4/20 20:46',
-          content: ''
-        },
-        {
-          timestamp: '教务审批',
-          title: '已拒绝',
-          prople:'审批人：linxxx ',
-          time:'2019/4/20 20:46',
-          content: '缺少部分文件'
-        }
+
       ],
+      uploadFileUrl: process.env.VUE_APP_BASE_API,
       list:{
       "id": 6,
       "start": "通过",
@@ -59,11 +137,14 @@ export default {
       "stioAcademy": "继续教育学院",
       "stioOpinion": null,
       "stioAppover": 2,
-      "createTime": "2022-09-15"},
-      jiaoWu:''
+      "createTime": "2022-09-15"
+      },
+      jiaoWu:'',
+      serverAddress:this.$store.state.user.serverAddress
     }
   },
   created() {
+
     // init the default selected tab
     const tab = this.$route.query.tab
     if (tab) {
@@ -73,21 +154,116 @@ export default {
   },
   methods: {
     async getList(){
-      const studioDate = await getStudioList();
+      const studioDate = await studioAppInfo();
       this.list = studioDate.data
 
       const jiaoWuDate = await roleJiaoWu();
       this.jiaoWu = jiaoWuDate.data
 
-      for (const studio of this.list) {
-        for (const jiaowu of this.jiaoWu) {
-          if(jiaowu.userId == studio.stioAppover){
-            studio.stioAppover = jiaowu.nickName
-          }
 
-        }
+
+    },
+    downloadFujian(fujian){
+      downloadFujian(fujian);
+    },
+    addXs(row){
+      this.form.id = row.id;
+      this.form.hostId = row.hostId;
+      this.open = true;
+    },
+    sQing(item){
+      console.log(item)
+    },
+    download( fujian ){
+      var fujians = fujian.split(",")
+      for (const argument of fujians) {
+        window.open(this.serverAddress+argument)
       }
     },
+    cancel() {
+      this.open = true;
+      this.reset();
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        xsId: null,
+        id: null,
+        hostId: null,
+        xsContxtApper: null,
+        xsFile: null,
+        xsContxtTeacher: null,
+        createTime: null
+      };
+      this.resetForm("form");
+    },
+    handleAdd() {
+      this.reset();
+      this.open = true;
+      this.title = "添加协商";
+    },
+    /** 修改按钮操作 */
+    handleUpdate(row) {
+      this.reset();
+      const xsId = row.xsId || this.ids
+      getXs(xsId).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "修改协商";
+      });
+    },
+    /** 提交按钮 */
+    submitForm() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.xsId != null) {
+            updateXs(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            addXs(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
+      });
+    },
+    xieShan(item){
+      this.queryParams.hostId = item.hostId;
+      this.queryParams.id = item.id
+
+      listXs(this.queryParams).then(response => {
+
+        this.Xieopen = true;
+        console.log(response)
+        this.stioList = response.rows;
+      });
+
+
+
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const xsIds = row.xsId || this.ids;
+      this.$modal.confirm('是否确认删除协商编号为"' + xsIds + '"的数据项？').then(function() {
+        return delXs(xsIds);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {});
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('xs/xs/export', {
+        ...this.queryParams
+      }, `xs_${new Date().getTime()}.xlsx`)
+    },
+  computed: {
+  },
   }
 }
 </script>

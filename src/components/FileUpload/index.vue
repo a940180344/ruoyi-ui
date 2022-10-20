@@ -160,6 +160,8 @@ export default {
         this.$emit("input", this.listToString(this.fileList));
         this.$modal.closeLoading();
       }
+
+
     },
     // 删除文件
     handleDelete(index) {
@@ -168,6 +170,11 @@ export default {
     },
     // 获取文件名称
     getFileName(name) {
+      for (const item of this.fileList) {
+        if(item.name == "undefined"){
+          this.fileList.remove(item);
+        }
+      }
       if (name.lastIndexOf("/") > -1) {
         return name.slice(name.lastIndexOf("/") + 1);
       } else {

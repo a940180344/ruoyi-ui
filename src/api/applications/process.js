@@ -40,3 +40,13 @@ export function roleJiaoWu() {
     method: 'get',
   })
 }
+
+
+// 个人申请列表
+export function studioAppInfo() {
+  return request({
+    url: '/studio/application/info',
+    method: 'get',
+
+  })
+}

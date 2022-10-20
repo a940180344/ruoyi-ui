@@ -42,3 +42,12 @@ export function delDept(deptId) {
     method: 'delete'
   })
 }
+
+
+// 进程字典
+export function getArlDictionary() {
+  return request({
+    url: '/Approval/dictionary',
+    method: 'get'
+  })
+}

@@ -12,7 +12,7 @@ const user = {
     studentID:'',
     deptID:'',
     deptName:'',
-
+    serverAddress: "http://localhost:20100"
   },
 
   mutations: {
@@ -76,6 +76,8 @@ const user = {
       })
     },
 
+
+
     // 退出系统
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
@@ -98,7 +100,8 @@ const user = {
         removeToken()
         resolve()
       })
-    }
+    },
+
   }
 }
 

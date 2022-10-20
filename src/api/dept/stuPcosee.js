@@ -53,6 +53,17 @@ export function refuse(data) {
   })
 }
 
+
+// 通过审批信息
+export function Pass(data) {
+  return request({
+    url: '/studio/application/pass',
+    method: 'post',
+    data: data
+  })
+}
+
+
 // // 修改studio
 // export function updateStio(data) {
 //   return request({
