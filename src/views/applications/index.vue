@@ -1,21 +1,32 @@
 <template>
   <div class="tab-container">
-    <el-tag>mounted times ：{{ createdTimes }}</el-tag>
-    <el-alert :closable="false" style="width:200px;display:inline-block;vertical-align: middle;margin-left:30px;" title="Tab with keep-alive" type="success" />
 
-    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
-      <el-tab-pane v-for="item in tabMapOptions"  :label="item.label" :name="item.key">
-        <keep-alive>
-          <tab-pane v-if="activeName==item.key" :type="item.key" @create="showCreatedTimes" />
-        </keep-alive>
-      </el-tab-pane>
-    </el-tabs>
+
+
+    <div v-for="(item) of appList" style="margin-top: 40px">
+      <el-card class="box-card" >
+        <div slot="header" class="clearfix">
+          <span>{{item.name}}</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="TiaoZh(item)">点击展示</el-button>
+        </div>
+        <div style="text-align: center">
+            当前进程
+        </div>
+      </el-card>
+
+    </div>
 
     <el-tabs v-model="activeTea" style="margin-top:15px;" type="border-card">
-      <el-tab-pane v-for="item in tabTeaOptions"  :label="item.label" :name="item.key">
+      <el-tab-pane label="工作室申请" name="工作室申请">
         <keep-alive>
-          <timeline />
+          <timeline/>
         </keep-alive>
+      </el-tab-pane>
+      <el-tab-pane label="项目组申请" name="项目组申请">
+        <p>111</p>
+      </el-tab-pane>
+      <el-tab-pane label="纳新申请" name="纳新申请">
+        <p>111</p>
       </el-tab-pane>
     </el-tabs>
 
@@ -25,28 +36,23 @@
 
 <script>
 import { listStio,addStio ,getInfoList} from "@/api/dept/stuPcosee";
-import {roleJiaoWu} from "@/api/applications/process"
 import TabPane from './tabpanes/student/TabPane'
 import Timeline from './tabpanes/teacher/Timeline'
+import {dictionaryApplication,getByid,updataApplication} from  "@/api/applications/process"
 export default {
   name: 'applications',
   components: { TabPane ,Timeline},
   data() {
     return {
-      tabMapOptions: [
-        { label: '情暖工作室', key: 'CN' },
-        { label: '小林工作室', key: 'US' },
-        { label: '琳琳工作室', key: 'JP' },
-      ],
       tabTeaOptions: [
-        { label: '工作室创建申请', key: 'CN' },
-        { label: '项目组申请', key: 'US' },
+        { label: '工作室申请', key: '工作室申请' },
+        { label: '项目组申请', key: '项目组申请' },
       ],
-      activeName: 'CN',
       createdTimes: 0,
-      activeTea:'CN',
+      activeTea:'工作室申请',
       List:'',
-      fujian:''
+      fujian:'',
+      appList:['工作室申请','项目组申请']
     }
   },
   watch: {
@@ -64,13 +70,24 @@ export default {
   },
   methods: {
     async getList(){
+      const processData = await dictionaryApplication();
+      this.appList  = processData.data
+
       const studioDate = await getInfoList();
       this.List = studioDate.data
 
-
+      for (const item of processData.data) {
+        this.tabTeaOptions.push({
+          label: item.name, key: item.name
+        })
+      }
     },
     showCreatedTimes() {
       this.createdTimes = this.createdTimes + 1
+    },
+    TiaoZh(item){
+      this.activeTea = item.name
+     console.log(item+"跳转成功");
     }
   }
 }

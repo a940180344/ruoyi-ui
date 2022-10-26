@@ -15,6 +15,8 @@
             <el-button size="mini" type="primary" @click="addXs(item)">查 看</el-button>
           </strong>
 
+          <strong v-if="item.start == '待审批'" style="color: orange;font-size: larger">{{ item.start }}</strong>
+
           <p><strong style="color:rebeccapurple"> 审批人:</strong> {{ item.stioAppover }}</p>
           <div v-if="item.stioOpinion != null">
             <p style="color: red">拒绝理由：{{item.stioOpinion}}</p>
@@ -61,14 +63,10 @@
         </el-timeline-item>
       </el-timeline>
     </el-dialog>
-
-
   </div>
 </template>
 
 <script>
-import { listStio,addStio ,getStudioList} from "@/api/dept/stuPcosee";
-import { mapGetters } from 'vuex'
 import { listXs, getXs, delXs, addXs, updateXs } from "@/api/applications/xs/xs";
 import {roleJiaoWu,studioAppInfo} from "@/api/applications/process";
 import {downloadFujian} from "@/utils/request";
@@ -160,8 +158,6 @@ export default {
       const jiaoWuDate = await roleJiaoWu();
       this.jiaoWu = jiaoWuDate.data
 
-
-
     },
     downloadFujian(fujian){
       downloadFujian(fujian);
@@ -242,9 +238,6 @@ export default {
         console.log(response)
         this.stioList = response.rows;
       });
-
-
-
     },
     /** 删除按钮操作 */
     handleDelete(row) {

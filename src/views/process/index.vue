@@ -57,7 +57,7 @@
 
 <script>
 import dragTreeTable from "drag-tree-table";
-import {dictionaryApplication,getByid,updataApplication,getByName,roleJiaoWu} from  "@/api/applications/process"
+import {dictionaryApplication,getByid,updataApplication} from  "@/api/applications/process"
 export default {
   name: "app",
   data() {
