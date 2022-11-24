@@ -1,44 +1,46 @@
 import request from '@/utils/request'
 
-// 查询纳新列表
-export function listStudioNaxin(query) {
+// 查询naxin列表
+export function listNaxin(data) {
   return request({
-    url: '/studio/studioNaxin/list',
-    method: 'get',
-    params: query
+    url: '/studio/naxin/List',
+    method: 'Post',
+    data: data
   })
 }
 
-// 查询纳新详细
-export function getStudioNaxin(dioId) {
+// 新增naxin
+export function addNaxin(data) {
   return request({
-    url: '/studio/studioNaxin/' + dioId,
-    method: 'get'
-  })
-}
-
-// 新增纳新
-export function addStudioNaxin(data) {
-  return request({
-    url: '/studio/studioNaxin',
+    url: '/studio/naxin/add',
     method: 'post',
     data: data
   })
 }
 
-// 修改纳新
-export function updateStudioNaxin(data) {
+// 通过审批信息
+export function pass(data) {
   return request({
-    url: '/studio/studioNaxin',
-    method: 'put',
+    url: '/studio/naxin/pass',
+    method: 'post',
     data: data
   })
 }
 
-// 删除纳新
-export function delStudioNaxin(dioId) {
+// 通过驳回审批信息
+export function overrule(data) {
   return request({
-    url: '/studio/studioNaxin/' + dioId,
-    method: 'delete'
+    url: '/studio/naxin/overrule',
+    method: 'post',
+    data: data
+  })
+}
+
+// 拒绝审批信息
+export function refuse(data) {
+  return request({
+    url: '/studio/naxin/refuse',
+    method: 'post',
+    data: data
   })
 }

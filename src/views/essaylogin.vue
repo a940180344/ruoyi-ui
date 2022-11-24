@@ -41,8 +41,7 @@
     <div class="essay">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>卡片名称</span>
-          <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+          <span>{{ essayTitle }}</span>
         </div>
         <div class="ql-container ql-snow">
           <div class="ql-editor" v-html="orz_content">
@@ -54,7 +53,7 @@
 </template>
 
 <script>
-import {getEssayFabu} from  '@/api/essay/essayFabu'
+import { listEssay, getEssay, delEssay, addEssay, updateEssay } from "@/api/essay/essay";
 export default {
 name: "essayLogin",
   data(){
@@ -62,6 +61,7 @@ name: "essayLogin",
       essayId:'',
       essay:'',
       orz_content:'',
+      essayTitle:""
     }
   },
   created() {
@@ -75,10 +75,11 @@ name: "essayLogin",
       })
     },
     async getList(){
-      const essayDate = await getEssayFabu(this.essayId);
+      const essayDate = await getEssay(this.essayId);
+      console.log("1")
       this.essay = essayDate
       this.orz_content = essayDate.data.essayContent
-
+      this.essayTitle = essayDate.data.essayTitle
       console.log(this.orz_content)
     }
   }
@@ -114,13 +115,10 @@ name: "essayLogin",
   float: right;
 }
 .essayDetail {
-  padding: 0px;
-  margin: 0px;
   background-image: url(./xuanchaunBack.jpg);
-  background-position: center center;
-  background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: cover;
+  background-size: 100%;
+
 }
 </style>
 <style rel="stylesheet/scss" lang="scss">

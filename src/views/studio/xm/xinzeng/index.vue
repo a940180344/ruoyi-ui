@@ -1,18 +1,28 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="标题" prop="essayTitle">
+      <el-form-item label="项目名" prop="xmName">
         <el-input
-          v-model="queryParams.essayTitle"
-          placeholder="请输入标题"
+          v-model="queryParams.xmName"
+          placeholder="请输入项目名"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="文章标签" prop="essayTag">
-        <el-select v-model="queryParams.essayTag" placeholder="请选择文章标签" clearable>
+      <el-form-item label="项目成员" prop="xmUser">
+        <el-select v-model="queryParams.xmUser" placeholder="请选择项目成员" clearable>
           <el-option
-            v-for="dict in dict.type.sys_essay_tag"
+            v-for="dict in dict.type.sys_user_sex"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="项目所属" prop="xmLeader">
+        <el-select v-model="queryParams.xmLeader" placeholder="请选择项目所属" clearable>
+          <el-option
+            v-for="dict in dict.type.sys_user_sex"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -33,7 +43,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['essay:essay:add']"
+          v-hasPermi="['studio:xm:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -44,7 +54,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['essay:essay:edit']"
+          v-hasPermi="['studio:xm:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -55,7 +65,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['essay:essay:remove']"
+          v-hasPermi="['studio:xm:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -65,22 +75,39 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['essay:essay:export']"
+          v-hasPermi="['studio:xm:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="essayList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="xmList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="essayId" />
-      <el-table-column label="标题" align="center" prop="essayTitle" />
-      <el-table-column label="文章标签" align="center" prop="essayTag">
+      <el-table-column label="项目名" align="center" prop="xmName" />
+      <el-table-column label="项目简介" align="center" prop="xmJianJie" />
+      <el-table-column label="项目成员" align="center" prop="xmUser">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_essay_tag" :value="scope.row.essayTag"/>
+          <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.xmUser"/>
         </template>
       </el-table-column>
-      <el-table-column label="发布工作室" align="center" prop="essaySource" />
+      <el-table-column label="项目所属" align="center" prop="xmLeader">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.xmLeader"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="项目文件" align="center" prop="xmWenJie" >
+      <template slot-scope="scope" v-if="scope.row.xmWenJie != null">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="downloadFujian(scope.row.xmWenJie)"
+        >下载附件</el-button>
+      </template>
+      <div v-else>
+        <strong>暂无附件</strong>
+      </div>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -88,14 +115,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['essay:essay:edit']"
+            v-hasPermi="['studio:xm:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['essay:essay:remove']"
+            v-hasPermi="['studio:xm:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -109,26 +136,37 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改发布文章对话框 -->
+    <!-- 添加或修改新增项目对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="内容">
-          <editor v-model="form.essayContent" :min-height="192"/>
+        <el-form-item label="项目名" prop="xmName">
+          <el-input v-model="form.xmName" placeholder="请输入项目名" />
         </el-form-item>
-        <el-form-item label="标题" prop="essayTitle">
-          <el-input v-model="form.essayTitle" placeholder="请输入标题" />
+        <el-form-item label="项目简介" prop="xmJianJie">
+          <el-input v-model="form.xmJianJie" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="文章标签">
-          <el-radio-group v-model="form.essayTag">
-            <el-radio
-              v-for="dict in dict.type.sys_essay_tag"
+        <el-form-item label="项目成员" prop="xmUser">
+          <el-select v-model="form.xmUser" placeholder="请选择项目成员">
+            <el-option
+              v-for="dict in dict.type.sys_user_sex"
               :key="dict.value"
-              :label="dict.value"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="发布工作室" prop="essaySource">
-          <el-input v-model="form.essaySource" placeholder="请输入发布工作室" />
+        <el-form-item label="项目所属" prop="xmLeader">
+          <el-select v-model="form.xmLeader" placeholder="请选择项目所属">
+            <el-option
+              v-for="dict in dict.type.sys_user_sex"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="项目文件">
+          <file-upload v-model="form.xmWenJie"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -140,11 +178,12 @@
 </template>
 
 <script>
-import { listEssay, getEssay, delEssay, addEssay, updateEssay } from "@/api/essay/essay";
+import { listXm, getXm, delXm, addXm, updateXm } from "@/api/studio/xm";
+import { downloadFujian } from '@/utils/request'
 
 export default {
-  name: "Essay",
-  dicts: ['sys_essay_tag'],
+  name: "Xm",
+  dicts: ['sys_user_sex'],
   data() {
     return {
       // 遮罩层
@@ -159,8 +198,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 发布文章表格数据
-      essayList: [],
+      // 新增项目表格数据
+      xmList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -169,10 +208,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        essayContent: null,
-        essayTitle: null,
-        essayTag: null,
-        essaySource: null,
+        xmName: null,
+        xmJianJie: null,
+        xmUser: null,
+        xmLeader: null,
+        xmWenJie: null
       },
       // 表单参数
       form: {},
@@ -185,11 +225,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询发布文章列表 */
+    /** 查询新增项目列表 */
     getList() {
       this.loading = true;
-      listEssay(this.queryParams).then(response => {
-        this.essayList = response.rows;
+      listXm(this.queryParams).then(response => {
+        this.xmList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -202,13 +242,14 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        essayId: null,
-        essayContent: null,
-        essayTitle: null,
-        essayTag: "0",
-        essaySource: null,
-        createTime: null,
-        createBy: null
+        id: null,
+        deptId: null,
+        xmName: null,
+        xmCreateTime: null,
+        xmJianJie: null,
+        xmUser: null,
+        xmLeader: null,
+        xmWenJie: null
       };
       this.resetForm("form");
     },
@@ -217,6 +258,10 @@ export default {
       this.queryParams.pageNum = 1;
       this.getList();
     },
+    /** 查询studio列表 */
+    downloadFujian(fujian){
+      downloadFujian(fujian);
+    },
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm");
@@ -224,7 +269,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.essayId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -232,30 +277,30 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加发布文章";
+      this.title = "添加新增项目";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const essayId = row.essayId || this.ids
-      getEssay(essayId).then(response => {
+      const id = row.id || this.ids
+      getXm(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改发布文章";
+        this.title = "修改新增项目";
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.essayId != null) {
-            updateEssay(this.form).then(response => {
+          if (this.form.id != null) {
+            updateXm(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addEssay(this.form).then(response => {
+            addXm(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -266,9 +311,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const essayIds = row.essayId || this.ids;
-      this.$modal.confirm('是否确认删除发布文章编号为"' + essayIds + '"的数据项？').then(function() {
-        return delEssay(essayIds);
+      const ids = row.id || this.ids;
+      this.$modal.confirm('是否确认删除新增项目编号为"' + ids + '"的数据项？').then(function() {
+        return delXm(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -276,9 +321,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('essay/essay/export', {
+      this.download('studio/xm/export', {
         ...this.queryParams
-      }, `essay_${new Date().getTime()}.xlsx`)
+      }, `xm_${new Date().getTime()}.xlsx`)
     }
   }
 };

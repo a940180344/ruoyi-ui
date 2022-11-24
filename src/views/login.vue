@@ -76,11 +76,19 @@ el-icon-sort-up"></i><span style="font-weight:900;font-size:large">工作室动�
 
                 </el-carousel-item>
               </el-carousel>
-            </div></div>
-            <div class="menu2right">右边自适应</div>
+            </div>
+            </div>
+            <div style="margin-right: 100px">
+              <div v-for="essay in menu2List" :key="essay.essayId" class="text item" @click="dianji(essay.essayId)">
+                  <i class="el-icon-caret-right" style="color: #ff0000"></i><span>{{essay.essayTitle}}</span>
+                <span style="color:darkgray;float: right">{{essay.createTime}}</span>
+                <div style="margin-top: 15px"></div>
+              </div>
+            </div>
           </div>
         </el-card>
       </div>
+
       <div class="menu3">
         <div class="box3" style="padding: 1%;">
           <div class="menu3left">
@@ -89,9 +97,10 @@ el-icon-sort-up"></i><span style="font-weight:900;font-size:large">工作室动�
                 <span style="font-weight:900;font-size:large"><i class="el-icon-edit"></i>公告通知</span>
                 <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
               </div>
-              <div v-for="o in 8" :key="o" class="text item">
-                <i class="el-icon-caret-right" style="color: #ff0000"></i>{{ '列表内容 ----------------------------------------------------------------------------------------------' + o }}
-                <span style="color:darkgray;float: right">2022.1.1</span>
+              <div v-for="essay in menu3List" :key="essay.essayId" class="text item" @click="dianji(essay.essayId)">
+                <i class="el-icon-caret-right" style="color: #ff0000"></i><span>{{essay.essayTitle}}</span>
+                <span style="color:darkgray;float: right">{{essay.createTime}}</span>
+                <div style="margin-top: 15px"></div>
               </div>
             </el-card>
           </div>
@@ -101,9 +110,10 @@ el-icon-sort-up"></i><span style="font-weight:900;font-size:large">工作室动�
                 <span style="font-weight:900;font-size:large"><i class="el-icon-edit"></i>工作室新闻</span>
                 <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
               </div>
-              <div v-for="o in 8" :key="o" class="text item">
-                <i class="el-icon-caret-right" style="color: red"></i>{{ '列表内容 ----------------------------------------------------------------------------------------------' + o }}
-                <span style="color:darkgray;float: right">2022.1.1</span>
+              <div v-for="essay in menu4List" :key="essay.essayId" class="text item" @click="dianji(essay.essayId)">
+                <i class="el-icon-caret-right" style="color: #ff0000"></i><span>{{"<"+essay.essaySource+">"}}{{essay.essayTitle}}</span>
+                <span style="color:darkgray;float: right">{{essay.createTime}}</span>
+                <div style="margin-top: 15px"></div>
               </div>
             </el-card>
           </div>
@@ -172,73 +182,7 @@ el-icon-sort-up"></i><span style="font-weight:900;font-size:large">工作室动�
       <el-footer>Footer</el-footer>
     </el-container>
     <!--    <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>-->
-    <el-dialog
-      :visible.sync="dialogVisible"
-      width="23%"
-      height = "30%">
-      <span slot="footer" class="dialog-footer">
-         <div>
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
-        <h3 class="title">阳光学院工作室登入</h3>
-        <el-form-item prop="username">
-          <el-input
-            v-model="loginForm.username"
-            type="text"
-            auto-complete="off"
-            placeholder="账号"
-          >
-            <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            v-model="loginForm.password"
-            type="password"
-            auto-complete="off"
-            placeholder="密码"
-            @keyup.enter.native="handleLogin"
-          >
-            <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="code" v-if="captchaEnabled">
-          <el-input
-            v-model="loginForm.code"
-            auto-complete="off"
-            placeholder="验证码"
-            style="width: 63%"
-            @keyup.enter.native="handleLogin"
-          >
-            <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
-          </el-input>
-          <div class="login-code">
-            <img :src="codeUrl" @click="getCode" class="login-code-img"/>
-          </div>
-        </el-form-item>
-        <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
-        <el-form-item style="width:100%;">
-          <el-button
-            :loading="loading"
-            size="medium"
-            type="primary"
-            style="width:100%;"
-            @click.native.prevent="handleLogin"
-          >
-            <span v-if="!loading">登 录</span>
-            <span v-else>登 录 中...</span>
-          </el-button>
-          <div style="float: right;" v-if="register">
-            <router-link class="link-type" :to="'/register'">立即注册</router-link>
-          </div>
-        </el-form-item>
-      </el-form>
-           <!--  底部  -->
-      <div class="el-login-footer">
-        <span>Copyright © 2018-2022 ruoyi.vip All Rights Reserved.</span>
-      </div>
-    </div>
-  </span>
-    </el-dialog>
+
 
 
   </div>
@@ -248,35 +192,23 @@ el-icon-sort-up"></i><span style="font-weight:900;font-size:large">工作室动�
 import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
-import {listEssayFabu} from '@/api/essay/essayFabu'
+import { listEssay, getEssay, delEssay, addEssay, updateEssay } from "@/api/essay/essay";
 export default {
   name: "Login",
   data() {
     return {
       codeUrl: "",
-      dialogVisible: false,
-      loginForm: {
-        username: "admin",
-        password: "admin123",
-        rememberMe: false,
-        code: "",
-        uuid: ""
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        essayContent: null,
+        essayTitle: null,
+        essayTag: null,
+        essaySource: null,
       },
-      loginRules: {
-        username: [
-          { required: true, trigger: "blur", message: "请输入您的账号" }
-        ],
-        password: [
-          { required: true, trigger: "blur", message: "请输入您的密码" }
-        ],
-        code: [{ required: true, trigger: "change", message: "请输入验证码" }]
-      },
-      loading: false,
-      // 验证码开关
-      captchaEnabled: true,
-      // 注册开关
-      register: false,
-      redirect: undefined,
+      menu2List:[],//工作室动态
+      menu3List:[],//公告通知
+      menu4List:[],//工作室新闻
       lunbo:[
         "http://zsb.ygu.edu.cn/__local/B/3B/73/4F6516B2DF065EE583C484735C1_8A2B67D2_13DDE.jpg",
         "http://zsb.ygu.edu.cn/__local/7/21/3C/4CAEEAF9F8F801FDF481C935717_801CCEFF_10EFD.jpg",
@@ -307,14 +239,26 @@ export default {
     }
   },
   created() {
-    this.getCode();
-    this.getCookie();
     this.getList();
   },
   methods: {
-    async getList(){
-      const list = await this.listEssayFabu(quam);
-      console.log(list)
+    getList() {
+      let essayList
+      listEssay(this.queryParams).then(response => {
+        essayList = response.rows;
+        for (const argument of essayList) {
+          if (argument.essayTag == "工作室新闻"){
+            this.menu4List.push(argument)
+          }
+          if (argument.essayTag == "工作室动态"){
+            this.menu2List.push(argument)
+          }
+          if (argument.essayTag == "公告通知"){
+            this.menu3List.push(argument)
+          }
+        }
+      });
+
     },
     tiaohzuan(){
       this.$router.push({
@@ -322,61 +266,12 @@ export default {
       })
     },
     dianji(id){
+      console.log(id)
       this.$router.push({
         path: '/essaylogin',
         query: { essayId: id },
       })
     },
-    getCode(){
-      getCodeImg().then(res => {
-        this.captchaEnabled = res.captchaEnabled === undefined ? true : res.captchaEnabled;
-        if (this.captchaEnabled) {
-          this.codeUrl = "data:image/gif;base64," + res.img;
-          this.loginForm.uuid = res.uuid;
-        }
-      });
-    },
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done();
-        })
-        .catch(_ => {});
-    },
-    getCookie() {
-      const username = Cookies.get("username");
-      const password = Cookies.get("password");
-      const rememberMe = Cookies.get('rememberMe')
-      this.loginForm = {
-        username: username === undefined ? this.loginForm.username : username,
-        password: password === undefined ? this.loginForm.password : decrypt(password),
-        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
-      };
-    },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true;
-          if (this.loginForm.rememberMe) {
-            Cookies.set("username", this.loginForm.username, { expires: 30 });
-            Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
-            Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
-          } else {
-            Cookies.remove("username");
-            Cookies.remove("password");
-            Cookies.remove('rememberMe');
-          }
-          this.$store.dispatch("Login", this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
-          }).catch(() => {
-            this.loading = false;
-            if (this.captchaEnabled) {
-              this.getCode();
-            }
-          });
-        }
-      });
-    }
   }
 };
 </script>
@@ -450,12 +345,13 @@ export default {
 .el-container {
   padding: 0px;
   margin: 0px;
-  height: 100%;
+  height: 300%;
   background-image: url(./xuanchaunBack.jpg);
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
+  background-attachment: fixed
 }
 
 .menu1 {

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { listEssayFabu, getEssayFabu } from '@/api/essay/essayFabu'
+import { listEssayFabu, getEssayFabu } from '@/api/essay/essay'
 import PanelGroup from "@/views/components/PanelGroup";
 import TodoList from "@/views/components/TodoList"
 import TransactionTable from '@/views/components/TransactionTable'

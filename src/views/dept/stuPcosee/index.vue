@@ -206,6 +206,7 @@ export default {
       this.loading = true;
       listStio(this.queryParams).then(response => {
         this.stioList = response.data.records;
+        console.log(this.stioList)
         this.total = response.data.total;
         this.loading = false;
       });

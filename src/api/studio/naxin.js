@@ -3,6 +3,15 @@ import request from '@/utils/request'
 // 查询项目纳新列表
 export function listNaxin(query) {
   return request({
+    url: '/studio/naxin/List',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询项目纳新列表
+export function listNaxin1(query) {
+  return request({
     url: '/studio/naxin/list',
     method: 'get',
     params: query

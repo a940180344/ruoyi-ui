@@ -66,8 +66,13 @@ export const constantRoutes = [
   {
     path: '/studiodetail',
     component: () => import('@/views/studio/studioDetail/index'),
-    hidden: true
+    hidden: false
   },
+  // {
+  //   path: '/studentdetail',
+  //   component: () => import('@/views/studio/studioNaxin/studentdetail/index'),
+  //   hidden: false
+  // },
   {
     path: '/register',
     component: () => import('@/views/register'),
