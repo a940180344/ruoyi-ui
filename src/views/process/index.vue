@@ -14,7 +14,6 @@
           </dragTreeTable>
           <el-button @click="newRow" type="primary">新增一行</el-button>
           <div style="float: right">
-
             <el-button @click="setProcess" type="warning">提交</el-button>
           </div>
         </el-tab-pane>
@@ -24,7 +23,7 @@
 
 
     <el-dialog
-      title="提示"
+      title="添加流程控制"
       :visible.sync="dialogVisible"
       width="30%"
       :before-close="handleClose">
@@ -74,6 +73,9 @@ export default {
       }, {
         value: '106',
         label: '副院长'
+      }, {
+        value: '102',
+        label: '学生组长'
       }],
 
       dialogVisible: false,

@@ -9,8 +9,8 @@
         <img style="border-radius: 30px; width:60px;height:60px;" src="https://p26-passport.byteacctimg.com/img/user-avatar/2888e76b28ca6113c08f49230be7d3c6~300x300.image" alt="">
       </div>
       <div class="box-center">
-        <div class="user-name text-center">{{ user.name }}</div>
-        <div class="user-role text-center text-muted">{{ user.role | uppercaseFirst }}</div>
+        <div class="user-name text-center">{{ form.nickName }}</div>
+        <div class="user-role text-center text-muted">{{ form.remark | uppercaseFirst }}</div>
       </div>
     </div>
 
@@ -19,12 +19,12 @@
         <div class="user-bio-section-header"><svg-icon icon-class="education" /><span>个人信息栏</span></div>
         <div class="user-bio-section-body">
           <div class="text-muted">
-            <el-col :span="12"><div class="grid-content bg-purple"><strong>学号：{{this.studentID}}</strong></div></el-col>
-            <el-col :span="12"><div class="grid-content bg-purple"><strong>班级：{{this.studentID}}</strong></div></el-col>
-            <el-col :span="12"><div class="grid-content bg-purple"><strong>年级：{{this.studentID}}</strong></div></el-col>
-            <el-col :span="12"><div class="grid-content bg-purple"><strong>e-mail：{{this.studentID}}</strong></div></el-col>
-            <el-col :span="12"><div class="grid-content bg-purple"><strong>手机：{{this.studentID}}</strong></div></el-col>
-            <el-col :span="12"><div class="grid-content bg-purple"><strong>手机：{{this.studentID}}</strong></div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple"><strong>学号：{{form.userName}}</strong></div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple"><strong>班级：{{form.translation}}</strong></div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple"><strong>年级：{{form.grade}}</strong></div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple"><strong>e-mail：{{form.email}}</strong></div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple"><strong>手机：{{form.phonenumber}}</strong></div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple"><strong>学院：{{form.academy}}</strong></div></el-col>
           </div>
         </div>
       </div>
@@ -51,9 +51,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { getUserProfile} from "@/api/system/user";
 export default {
   data(){
     return{
+      form:"",
       a:[{
         title:'Vue',
         percentage:80
@@ -66,6 +68,17 @@ export default {
       },]
     }
   },
+  created() {
+    this.getList();
+  },
+  methods:{
+    getList(){
+      getUserProfile(this.userId).then(response => {
+        this.form = response.data;
+        console.log( this.form)
+      });
+    }
+  },
   props: {
     user: {
       type: Object,
@@ -74,7 +87,8 @@ export default {
           name: '',
           email: '',
           avatar: '',
-          role: ''
+          role: '',
+          userId:''
         }
       }
     },

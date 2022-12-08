@@ -29,7 +29,7 @@ export function getNaxin(naxinId) {
 // 新增项目纳新
 export function addNaxin(data) {
   return request({
-    url: '/studio/naxin',
+    url: '/studio/naxin/add',
     method: 'post',
     data: data
   })

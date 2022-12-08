@@ -4,7 +4,7 @@
       <el-form-item label="部门名称" prop="deptName">
         <el-input
           v-model="queryParams.deptName"
-          placeholder="请输入部门名称"
+          placeholder="请输入部门名称1"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -235,7 +235,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="student = false">取 消</el-button>
-    <el-button type="primary" @click="student = false">确 定</el-button>
+    <el-button type="primary" @click="pushStu">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -244,6 +244,7 @@
 <script>
 import { listDept, getDept, delDept, addDept, updateDept } from "@/api/dept/dept";
 import {getUserProfile} from "@/api/system/user"
+import {addNaxin} from "@/api/studio/naxin"
 export default {
   name: "Dept",
   data() {
@@ -285,10 +286,12 @@ export default {
 
       },
       studentForm:{
-        name:'',
-        studentId:'',
-        reason:'',
-        studioId:''
+        hostId:'',
+        naxinQingk:'',
+        naxinReason:'',
+        naxin_shuoming:'',
+        naxinTechang:"",
+        stioId:''
       },
       student:false,
       // 表单参数
@@ -310,6 +313,15 @@ export default {
       })
     },
 
+    pushStu(){
+      addNaxin(this.studentForm).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+
+
+    },
 
 
 

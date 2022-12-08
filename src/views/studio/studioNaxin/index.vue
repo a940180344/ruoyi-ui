@@ -245,8 +245,10 @@ export default {
   },
   methods: {
     //查看学生详情
-    lookForStuDetail(){
-      this.$router.push({path:'/studio/studentdetail'})
+    lookForStuDetail(userId){
+      this.$router.push({
+        path:'/studio/studentdetail',
+        query: { userId: userId },})
     },
     xieShan(item){
       this.xieQueryParams.hostId = item.hostId;

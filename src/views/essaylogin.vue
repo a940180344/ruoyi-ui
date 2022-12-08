@@ -1,7 +1,7 @@
 <template>
   <div class="essayDetail">
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
-             background-color="red" text-color="#fff" active-text-color="#ffd04b">
+    <div > <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
+                   background-color="red" text-color="#fff" active-text-color="#ffd04b">
       <el-menu-item index="1">
         <div style="margin-top:20px"><h2 >阳光学院</h2></div>
 
@@ -38,17 +38,19 @@
       </div>
 
     </el-menu>
-    <div class="essay">
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>{{ essayTitle }}</span>
-        </div>
-        <div class="ql-container ql-snow">
-          <div class="ql-editor" v-html="orz_content">
+      <div class="essay">
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>{{ essayTitle }}</span>
           </div>
-        </div>
-      </el-card>
+          <div class="ql-container ql-snow">
+            <div class="ql-editor" v-html="orz_content">
+            </div>
+          </div>
+        </el-card>
+      </div>
     </div>
+
   </div>
 </template>
 

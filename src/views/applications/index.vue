@@ -23,10 +23,10 @@
         </keep-alive>
       </el-tab-pane>
       <el-tab-pane label="项目组申请" name="项目组申请">
-        <p>111</p>
+
       </el-tab-pane>
       <el-tab-pane label="纳新申请" name="纳新申请">
-        <p>111</p>
+        <naxinTimeLine></naxinTimeLine>
       </el-tab-pane>
     </el-tabs>
 
@@ -39,9 +39,10 @@ import { listStio,addStio ,getInfoList} from "@/api/dept/stuPcosee";
 import TabPane from './tabpanes/student/TabPane'
 import Timeline from './tabpanes/teacher/Timeline'
 import {dictionaryApplication,getByid,updataApplication} from  "@/api/applications/process"
+import naxinTimeLine from '@/views/applications/tabpanes/teacher/naxinTimeLine'
 export default {
   name: 'applications',
-  components: { TabPane ,Timeline},
+  components: { TabPane ,Timeline,naxinTimeLine},
   data() {
     return {
       tabTeaOptions: [
