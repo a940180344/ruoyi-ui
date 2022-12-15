@@ -80,7 +80,6 @@
           <dict-tag :options="dict.type.sys_essay_tag" :value="scope.row.essayTag"/>
         </template>
       </el-table-column>
-      <el-table-column label="发布工作室" align="center" prop="essaySource" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -127,9 +126,6 @@
             >{{dict.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="发布工作室" prop="essaySource">
-          <el-input v-model="form.essaySource" placeholder="请输入发布工作室" />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -141,7 +137,7 @@
 
 <script>
 import { listEssay, getEssay, delEssay, addEssay, updateEssay } from "@/api/essay/essay";
-
+import { mapGetters } from 'vuex'
 export default {
   name: "Essay",
   dicts: ['sys_essay_tag'],
@@ -181,7 +177,18 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters([
+      'name',
+      'avatar',
+      'roles',
+      'studentID',//学号
+      'deptID',
+      'deptName'
+    ])
+  },
   created() {
+
     this.getList();
   },
   methods: {
@@ -246,6 +253,10 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+      if(this.form.essayTag == "工作室动态"){
+        this.form.essaySource = this.deptName;
+      }
+
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.essayId != null) {

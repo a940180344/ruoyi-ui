@@ -2,9 +2,18 @@ import request from '@/utils/request'
 import { parseStrEmpty } from "@/utils/ruoyi";
 
 // 查询用户列表
+export function listUsers(query) {
+  return request({
+    url: '/system/user/lists',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询用户列表
 export function listUser(query) {
   return request({
-    url: '/system/user/dept/list',
+    url: '/system/user/list',
     method: 'get',
     params: query
   })

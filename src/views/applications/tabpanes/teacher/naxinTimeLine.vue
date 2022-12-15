@@ -1,7 +1,7 @@
 <template>
   <div class="block">
     <el-timeline>
-      <el-timeline-item v-for="(item) of list" :timestamp="item.CreateTime" placement="top">
+      <el-timeline-item v-for="(item) of naxinList.ownList" :timestamp="item.CreateTime" placement="top">
         <el-card>
           <strong v-if="item.start == '通过'" style="color: green;font-size: larger">{{ item.start }}</strong>
           <strong v-if="item.start == '拒绝'" style="color: red;font-size: larger">{{ item.start }}</strong>
@@ -17,14 +17,13 @@
 
           <strong v-if="item.start == '待审批'" style="color: orange;font-size: larger">{{ item.start }}</strong>
 
-          <p><strong style="color:rebeccapurple"> 审批人:</strong> {{ item.stioAppover }}</p>
-          <div v-if="item.stioOpinion != null">
-            <p style="color: red">拒绝理由：{{item.stioOpinion}}</p>
+          <p><strong style="color:rebeccapurple"> 审批人:</strong> {{ getChangestudentId(item.naxinAppover) }}</p>
+          <div v-if="item.naxinOpinion != null">
+            <p style="color: red">拒绝理由：{{item.naxinOpinion}}</p>
           </div>
-          <p><strong>申请人：{{item.stioTeacher}}</strong></p>
-          <p><strong>工作室名：{{item.stioName}}</strong></p>
-          <p><strong>附件：</strong>  <el-button @click="download(item.stioReason)">点击下载</el-button></p>
-          <p><strong>学院：{{item.stioAcademy}}</strong></p>
+          <p><strong>申请的工作室：{{getChangeStioId(item.stioId)}}</strong></p>
+          <p><strong>申请人：{{getChangestudentId(item.userId)}}</strong></p>
+          <p><strong>附件：</strong>  <el-button @click="download(item.naxinReason)">点击下载</el-button></p>
           <strong>协商：<el-button size="mini" type="primary" @click="xieShan(item)"> 协商 记录</el-button></strong>
         </el-card>
       </el-timeline-item>
@@ -56,9 +55,7 @@
             <br>
             <div  v-if="item.xsContxtTeacher != null">附件： <el-button size="mini" type="primary" @click="downloadFujian(item.xsFile)" >点击 下载</el-button></div>
             <br>
-
             <div v-if="item.xsContxtTeacher != null">提交人： <el-input v-model="item.xsContxtTeacher" placeholder="请输入修改内容(提交人)" /></div>
-
           </el-card>
         </el-timeline-item>
       </el-timeline>
@@ -68,15 +65,22 @@
 
 <script>
 import { listXs, getXs, delXs, addXs, updateXs } from "@/api/applications/xs/xs";
-import {roleJiaoWu,studioAppInfo} from "@/api/applications/process";
+import {studioAppInfo} from "@/api/applications/process";
 import {downloadFujian} from "@/utils/request";
+import { listDept } from '@/api/system/dept'
+import { listUsers} from "@/api/system/user";
 export default {
 
+  props: {
+    naxinList: String,
+  },
   data() {
     return {
+      listUsers:'',
       rules: {
 
       },
+      listDepts:'',
       Xieopen:false,
       // 遮罩层
       loading: true,
@@ -149,12 +153,16 @@ export default {
       this.activeName = tab
     }
     this.getList()
+
   },
   methods: {
-    async getList(){
-      const studioDate = await studioAppInfo();
-      this.list = studioDate.data
-
+    getList(){
+      listDept().then(res=>{
+        this.listDepts = res.data
+      })
+      listUsers().then(res=>{
+        this.listUsers = res.rows
+      })
     },
     downloadFujian(fujian){
       downloadFujian(fujian);
@@ -167,6 +175,7 @@ export default {
     sQing(item){
       console.log(item)
     },
+
     download( fujian ){
       var fujians = fujian.split(",")
       for (const argument of fujians) {
@@ -176,6 +185,29 @@ export default {
     cancel() {
       this.open = true;
       this.reset();
+    },
+    /*用户字典
+* */
+    getChangestudentId(userId){
+      let studentName ;
+      for (let student of this.listUsers){
+        if (student.userId == userId){
+          studentName = student.nickName
+        }
+      }
+      return studentName
+    },
+    /*部门字典
+  * */
+    getChangeStioId(studioId){
+      let studioName ;
+
+      for (let studio of this.listDepts){
+        if (studio.deptId == studioId){
+          studioName = studio.deptName
+        }
+      }
+      return studioName
     },
     // 表单重置
     reset() {

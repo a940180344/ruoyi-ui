@@ -61,7 +61,10 @@ export default {
       'roles',
       'studentID',//学号
       'deptID',
-      'deptName'
+      'deptName',
+      'academy',
+      'grade',
+      'translation',
     ])
   },
 }

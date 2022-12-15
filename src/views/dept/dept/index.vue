@@ -53,7 +53,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="studentFun"
+            @click="studentFun(scope.row)"
           >申请</el-button>
 
         </template>
@@ -109,128 +109,55 @@
       <el-form ref="form" :model="studentForm"  label-width="80px">
         <el-col >
           <el-form-item label="名字" >
-            <el-input v-model="studentForm.name"  disabled/>
+            <el-input v-model="name"  disabled/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="学号" >
-            <el-input v-model="studentForm.studentId"   disabled/>
+            <el-input v-model="studentID"   disabled/>
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
-          <el-form-item label="性别" >
-            <el-input v-model="studentForm.studentId"   disabled/>
-          </el-form-item>
-        </el-col>
 
         <el-col :span="12">
-          <el-form-item label="年纪" >
-            <el-input v-model="studentForm.studentId"   disabled/>
+          <el-form-item label="年级" >
+            <el-input v-model="grade"   disabled/>
           </el-form-item>
         </el-col>
 
         <el-col :span="12">
           <el-form-item label="班级" >
-            <el-input v-model="studentForm.studentId"  disabled/>
+            <el-input v-model="translation"  disabled/>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="学院" >
+            <el-input v-model="academy"  disabled/>
+          </el-form-item>
+        </el-col>
+
           <el-form-item label="学习情况" >
             <el-input
-              type="textarea" :rows="2" v-model="studentForm.reason"  placeholder="请输入学习情况"/>
+              type="textarea" :rows="2" v-model="studentForm.naxinQingk"  placeholder="请输入学习情况"/>
           </el-form-item>
           <el-form-item label="特长说明" >
             <el-input
-              type="textarea" :rows="2" v-model="studentForm.reason"  placeholder="请输入特长说明"/>
+              type="textarea" :rows="2" v-model="studentForm.naxinTechang"  placeholder="请输入特长说明"/>
           </el-form-item>
 
 
-        <el-form-item label="掌握技能1" prop="field102" >
-        <el-col :span="6" >
-          <el-form-item >
-            <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
-          </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="14">
-        <el-form-item  label="滑块" prop="field101">
-          <el-slider :max='100' :step='1'></el-slider>
-        </el-form-item>
-        </el-col>
-        <el-col :span="2" style="float: right">
-          <el-form-item prop="field101" v-show="er != true">
-            <el-button  @click="er = true" type="primary" icon="el-icon-plus"></el-button>
-          </el-form-item>
-        </el-col>
-        </el-form-item>
 
-        <div v-show="er">
-          <el-form-item label="掌握技能2" prop="field102" >
-            <el-col :span="6" >
-              <el-form-item >
-                <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="14">
-              <el-form-item  label="滑块" prop="field101">
-                <el-slider :max='100' :step='1'></el-slider>
-              </el-form-item>
-            </el-col>
-            <el-col :span="2" style="float: right">
-              <el-form-item prop="field101" v-show="san != true">
-                <el-button  @click="san = true" type="primary" icon="el-icon-plus"></el-button>
-              </el-form-item>
-            </el-col>
-          </el-form-item>
-        </div>
-
-        <div v-show = "san">
-          <el-form-item label="掌握技能3" prop="field102" >
-            <el-col :span="6" >
-              <el-form-item >
-                <el-input v-model="studentForm.reason"  placeholder="请输入掌握技能" >
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="14">
-              <el-form-item  label="滑块" prop="field101">
-                <el-slider :max='100' :step='1'></el-slider>
-              </el-form-item>
-            </el-col>
-            <el-col :span="2" style="float: right">
-              <el-form-item prop="field101" v-show="er != true">
-                <el-button  @click="er = true" type="primary" icon="el-icon-plus"></el-button>
-              </el-form-item>
-            </el-col>
-          </el-form-item>
-<!--            <el-col :span="2" style="float: right">-->
-<!--              <el-form-item prop="field101" v-show="er != true">-->
-<!--                <el-button  @click="er = true" type="primary" icon="el-icon-plus"></el-button>-->
-<!--              </el-form-item>-->
-<!--            </el-col>-->
+<!--          <el-form-item label="学习方向和期望" >-->
+<!--            <el-input-->
+<!--              type="textarea" :rows="2" v-model="studentForm.naxinQiWang"  placeholder="请输入学习方向和期望"/>-->
 <!--          </el-form-item>-->
-<!--          <el-col :span="2" style="margin-left: -75px">-->
-<!--            <el-form-item prop="field101">-->
-<!--              <el-button type="primary" icon="el-icon-plus"></el-button>-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-        </div>
-
-          <el-form-item label="学习方向和期望" >
-            <el-input
-              type="textarea" :rows="2" v-model="studentForm.reason"  placeholder="请输入学习方向和期望"/>
-          </el-form-item>
 
         <el-form-item label="个人简介" >
-          <el-input type="textarea" :rows="2" v-model="studentForm.reason" placeholder="请输入个人简介" />
+          <el-input type="textarea" :rows="2" v-model="studentForm.naxinShuoming" placeholder="请输入个人简介" />
         </el-form-item>
 
         <el-form-item label="上传附件" prop="field102" required>
-          <el-upload ref="field102" :file-list="field102fileList" :action="field102Action"
-                     :before-upload="field102BeforeUpload">
-            <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
-          </el-upload>
+          <file-upload v-model="studentForm.naxinReason" ref="upload" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -245,6 +172,7 @@
 import { listDept, getDept, delDept, addDept, updateDept } from "@/api/dept/dept";
 import {getUserProfile} from "@/api/system/user"
 import {addNaxin} from "@/api/studio/naxin"
+import { mapGetters } from 'vuex'
 export default {
   name: "Dept",
   data() {
@@ -286,10 +214,9 @@ export default {
 
       },
       studentForm:{
-        hostId:'',
         naxinQingk:'',
         naxinReason:'',
-        naxin_shuoming:'',
+        naxinShuoming:'',
         naxinTechang:"",
         stioId:''
       },
@@ -300,6 +227,19 @@ export default {
       rules: {
       }
     };
+  },
+  computed: {
+    ...mapGetters([
+      'name',
+      'avatar',
+      'roles',
+      'studentID',//学号
+      'deptID',
+      'deptName',
+      'academy',
+      'grade',
+      'translation',
+    ])
   },
   created() {
     this.getList();
@@ -313,13 +253,14 @@ export default {
       })
     },
 
-    pushStu(){
+    pushStu(row){
       addNaxin(this.studentForm).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
+              this.$modal.msgSuccess("提交成功");
+              this.student = false;
               this.getList();
-            });
+            }).catch(err =>{
 
+      })
 
     },
 
@@ -335,12 +276,12 @@ export default {
       });
       const dateUser = await getUserProfile();
       this.user = dateUser.data;
-      console.log(this.user.userName)
+
       this.studentForm.name = this.user.nickName
       this.studentForm.studentId = this.user.userName
-      console.log(this.user)
     },
-    studentFun(){
+    studentFun(row){
+      this.studentForm.stioId = row.deptId
       this.student = true;
     },
     // 取消按钮

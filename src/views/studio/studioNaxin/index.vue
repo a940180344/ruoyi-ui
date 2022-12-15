@@ -83,8 +83,15 @@
         </template>
       </el-table-column>
       <el-table-column label="新增人姓名" align="center" prop="userId" >
+        <template slot-scope="scope">
+          {{getChangestudentId(scope.row.userId)}}
+        </template>
       </el-table-column>
-      <el-table-column label="申请工作室" align="center" prop="stioId" />
+      <el-table-column label="申请工作室" align="center" prop="stioId" >
+        <template slot-scope="scope">
+          {{getChangeStioId(scope.row.stioId)}}
+        </template>
+      </el-table-column>
       <el-table-column label="申请文件" align="center" prop="naxinReason" >
         <el-button>点击下载</el-button>
       </el-table-column>
@@ -108,6 +115,11 @@
           >拒绝</el-button>
 
         </template>
+        <template slot-scope="scope" v-if="scope.row.start == '通过'">
+          <div>
+            <strong style="color: red">不可操作</strong>
+          </div>
+        </template>
       </el-table-column>
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -128,6 +140,12 @@
             icon="el-icon-delete"
             @click="bohui(scope.row)"
           >驳回</el-button>
+
+        </template>
+        <template slot-scope="scope" v-if="scope.row.start == '通过'">
+          <div>
+            <strong style="color: red">不可操作</strong>
+          </div>
         </template>
       </el-table-column>
       <el-table-column>
@@ -188,14 +206,16 @@ import { listNaxin,pass ,refuse,overrule } from "@/api/studio/studioNaxin";
 import {listNaxin1} from "@/api/studio/naxin";
 import { addXs, listXs } from '@/api/applications/xs/xs'
 import {downloadFujian} from "@/utils/request";
-
-
+import { listDept } from "@/api/system/dept";
+import { listUsers} from "@/api/system/user";
 
 export default {
   name: "Naxin",
   dicts: ['sys_xue_yuan', 'sys_user_sex', 'sys_ban','sys_state'],
   data() {
     return {
+      listUsers:'',
+      listDepts:'',
       XieSForm: {},
       openXies:false,
       XieList:"",
@@ -292,6 +312,17 @@ export default {
       })
       this.open = false
     },
+    /*部门字典
+    * */
+    getChangeStioId(studioId){
+      let studioName ;
+      for (let studio of this.listDepts){
+        if (studio.deptId == studioId){
+          studioName = studio.deptName
+        }
+      }
+      return studioName
+    },
     /** 提交按钮 */
     pass(row) {
       console.log(row)
@@ -308,11 +339,28 @@ export default {
         this.total = response.data.total;
         this.loading = false;
       });
+      listDept().then(res=>{
+        this.listDepts = res.data
+      })
+      listUsers().then(res=>{
+        this.listUsers = res.rows
+      })
     },
     // 取消按钮
     cancel() {
       this.open = false;
       this.reset();
+    },
+    /*用户字典
+* */
+    getChangestudentId(userId){
+      let studentName ;
+      for (let student of this.listUsers){
+        if (student.userId == userId){
+          studentName = student.nickName
+        }
+      }
+      return studentName
     },
     // 表单重置
     reset() {

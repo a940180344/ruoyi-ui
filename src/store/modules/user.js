@@ -12,7 +12,10 @@ const user = {
     studentID:'',
     deptID:'',
     deptName:'',
-    serverAddress: "http://localhost:20100"
+    serverAddress: "http://localhost:20100",
+    academy:'',
+    grade:'',
+    translation:""
   },
 
   mutations: {
@@ -56,10 +59,14 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
           const user = res.user
+          console.log(user)
           state.userIn = user;
           state.studentID = user.userName
           state.deptID = user.dept.deptId;
           state.deptName = user.dept.deptName;
+          state.academy = user.academy;
+          state.grade = user.grade;
+          state.translation = user.translation;
           const avatar = (user.avatar == "" || user.avatar == null) ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
           if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', res.roles)

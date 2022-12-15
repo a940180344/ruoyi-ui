@@ -84,11 +84,19 @@
       <el-table-column label="所属进程id" align="center" prop="hostId" />
       <el-table-column label="当前进行到的进程" align="center" prop="appOrder" />
       <el-table-column label="工作室名" align="center" prop="stioName" />
-      <el-table-column label="工作室所属老师" align="center" prop="stioTeacher" />
+      <el-table-column label="工作室所属老师" align="center" prop="stioTeacher" >
+      <template slot-scope="scope">
+        {{getChangestudentId(scope.row.stioTeacher)}}
+      </template>
+      </el-table-column>
       <el-table-column label="申请理由" align="center" prop="stioReason" />
       <el-table-column label="所属学院" align="center" prop="stioAcademy" />
       <el-table-column label="修改意见" align="center" prop="stioOpinion" />
-      <el-table-column label="审批人" align="center" prop="stioAppover" />
+      <el-table-column label="审批人" align="center" prop="stioAppover" >
+      <template slot-scope="scope">
+        {{getChangestudentId(scope.row.stioAppover)}}
+      </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -162,11 +170,12 @@
 
 <script>
 import { listStio,addStio } from "@/api/dept/stuPcosee";
-
+import { listUsers} from "@/api/system/user";
 export default {
   name: "Stio",
   data() {
     return {
+      listUsers:'',
       // 遮罩层
       loading: true,
       // 选中数组
@@ -201,6 +210,15 @@ export default {
     this.getList();
   },
   methods: {
+    getChangestudentId(userId){
+      let studentName ;
+      for (let student of this.listUsers){
+        if (student.userId == userId){
+          studentName = student.nickName
+        }
+      }
+      return studentName
+    },
     /** 查询studio列表 */
     getList() {
       this.loading = true;
@@ -210,6 +228,9 @@ export default {
         this.total = response.data.total;
         this.loading = false;
       });
+      listUsers().then(res=>{
+        this.listUsers = res.rows
+      })
     },
     // 取消按钮
     cancel() {

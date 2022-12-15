@@ -17,11 +17,11 @@
 
           <strong v-if="item.start == '待审批'" style="color: orange;font-size: larger">{{ item.start }}</strong>
 
-          <p><strong style="color:rebeccapurple"> 审批人:</strong> {{ item.stioAppover }}</p>
+          <p><strong style="color:rebeccapurple"> 审批人:</strong> {{ getChangestudentId(item.stioAppover) }}</p>
           <div v-if="item.stioOpinion != null">
             <p style="color: red">拒绝理由：{{item.stioOpinion}}</p>
           </div>
-          <p><strong>申请人：{{item.stioTeacher}}</strong></p>
+          <p><strong>申请人：{{getChangestudentId(item.stioTeacher)}}</strong></p>
           <p><strong>工作室名：{{item.stioName}}</strong></p>
           <p><strong>附件：</strong>  <el-button @click="download(item.stioReason)">点击下载</el-button></p>
           <p><strong>学院：{{item.stioAcademy}}</strong></p>
@@ -70,10 +70,12 @@
 import { listXs, getXs, delXs, addXs, updateXs } from "@/api/applications/xs/xs";
 import {roleJiaoWu,studioAppInfo} from "@/api/applications/process";
 import {downloadFujian} from "@/utils/request";
+import { listUsers} from "@/api/system/user";
 export default {
 
   data() {
     return {
+      listUsers:'',
       rules: {
 
       },
@@ -157,7 +159,9 @@ export default {
 
       const jiaoWuDate = await roleJiaoWu();
       this.jiaoWu = jiaoWuDate.data
-
+      listUsers().then(res=>{
+        this.listUsers = res.rows
+      })
     },
     downloadFujian(fujian){
       downloadFujian(fujian);
@@ -179,6 +183,17 @@ export default {
     cancel() {
       this.open = true;
       this.reset();
+    },
+    /*用户字典
+* */
+    getChangestudentId(userId){
+      let studentName ;
+      for (let student of this.listUsers){
+        if (student.userId == userId){
+          studentName = student.nickName
+        }
+      }
+      return studentName
     },
     // 表单重置
     reset() {

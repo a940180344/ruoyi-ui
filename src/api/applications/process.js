@@ -7,6 +7,13 @@ export function dictionaryApplication() {
     method: 'get'
   })
 }
+
+export function getAllUserApp() {
+  return request({
+    url: '/Approval/getAllUserApp',
+    method: 'get'
+  })
+}
 //根据id获取进程
 export function getByid(id) {
   return request({

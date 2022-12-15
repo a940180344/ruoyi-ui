@@ -44,7 +44,11 @@
         </template>
       </el-table-column>
       <el-table-column label="工作室名" align="center" prop="stioName" />
-      <el-table-column label="工作室所属老师" align="center" prop="stioTeacher" />
+      <el-table-column label="工作室所属老师" align="center" prop="stioTeacher" >
+      <template slot-scope="scope">
+        {{getChangestudentId(scope.row.stioTeacher)}}
+      </template>
+      </el-table-column>
       <el-table-column  label="附件" align="center"  class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.stioReason != null">
           <el-button
@@ -54,9 +58,12 @@
             @click="downloadFujian(scope.row.stioReason)"
           >下载附件</el-button>
         </template>
-        <div v-else>
+
+        <template slot-scope="scope" v-if="scope.row.stioReason == null">
+        <div>
           <strong>暂无附件</strong>
         </div>
+        </template>
       </el-table-column>
       <el-table-column label="所属学院" align="center" prop="stioAcademy" />
       <el-table-column label="修改意见" align="center" prop="stioOpinion" />
@@ -76,6 +83,11 @@
             @click="juJueDig(scope.row)"
           >拒绝</el-button>
 
+        </template>
+        <template slot-scope="scope" v-if="scope.row.start == '通过'">
+          <div>
+            <strong>不可操作</strong>
+          </div>
         </template>
       </el-table-column>
 
@@ -97,6 +109,11 @@
             icon="el-icon-delete"
             @click="bohui(scope.row)"
           >驳回</el-button>
+        </template>
+        <template slot-scope="scope" v-if="scope.row.start == '通过'">
+          <div>
+            <strong>不可操作</strong>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -167,11 +184,12 @@
 import { listStio, addStio,pass ,refuse,overrule} from "@/api/dept/stuPcosee";
 import { listXs, getXs, delXs, addXs, updateXs } from "@/api/applications/xs/xs";
 import {downloadFujian} from "@/utils/request";
-
+import { listUsers} from "@/api/system/user";
 export default {
   name: "Stio",
   data() {
     return {
+      listUsers:'',
       XieSForm: {},
       openXies:false,
       // 遮罩层
@@ -250,6 +268,9 @@ export default {
         this.total = response.data.total;
         this.loading = false;
       });
+      listUsers().then(res=>{
+        this.listUsers = res.rows
+      })
     },
     // 取消按钮
     cancel() {
@@ -266,6 +287,17 @@ export default {
         this.$modal.msgSuccess("提交成功");
         this.openXies = false;
       });
+    },
+    /*用户字典
+* */
+    getChangestudentId(userId){
+      let studentName ;
+      for (let student of this.listUsers){
+        if (student.userId == userId){
+          studentName = student.nickName
+        }
+      }
+      return studentName
     },
     // 表单重置
     reset() {
