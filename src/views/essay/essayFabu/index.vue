@@ -109,7 +109,7 @@
     />
 
     <!-- 添加或修改发布文章对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="内容">
           <editor v-model="form.essayContent" :min-height="192"/>

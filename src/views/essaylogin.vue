@@ -1,6 +1,8 @@
 <template>
   <div class="essayDetail">
-    <div > <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
+    <div >
+
+      <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
                    background-color="red" text-color="#fff" active-text-color="#ffd04b">
       <el-menu-item index="1">
         <div style="margin-top:20px"><h2 >阳光学院</h2></div>
@@ -42,8 +44,15 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>{{ essayTitle }}</span>
+            <strong style="float: right">{{essay.essayTag}}</strong>
           </div>
-          <div class="ql-container ql-snow">
+          <div style="margin-left: 10%">
+            创建时间: <strong>{{essay.createTime}}</strong>
+          </div>
+          <div style="float: right;margin-top: -20px;margin-right: 10%">
+            来源: <strong>{{essay.essaySource}}</strong>
+          </div>
+          <div class="ql-container ql-snow" style="margin-top: 20px">
             <div class="ql-editor" v-html="orz_content">
             </div>
           </div>
@@ -63,7 +72,7 @@ name: "essayLogin",
       essayId:'',
       essay:'',
       orz_content:'',
-      essayTitle:""
+      essayTitle:"",
     }
   },
   created() {
@@ -79,7 +88,7 @@ name: "essayLogin",
     async getList(){
       const essayDate = await getEssay(this.essayId);
       console.log("1")
-      this.essay = essayDate
+      this.essay = essayDate.data
       this.orz_content = essayDate.data.essayContent
       this.essayTitle = essayDate.data.essayTitle
       console.log(this.orz_content)
@@ -117,9 +126,10 @@ name: "essayLogin",
   float: right;
 }
 .essayDetail {
+
+  height: 100%;
   background-image: url(./xuanchaunBack.jpg);
-  background-attachment: fixed;
-  background-size: 100%;
+  background-size: cover;
 
 }
 </style>

@@ -3,12 +3,14 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="申请状态" prop="start">
-        <el-input
-          v-model="queryParams.start"
-          placeholder="请输入申请状态"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.start" placeholder="请选择审批状态" clearable>
+          <el-option
+            v-for="dict in dict.type.sys_state"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="工作室名" prop="stioName">
         <el-input
@@ -34,12 +36,13 @@
 
     <el-table v-loading="loading" :data="stioList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="" align="center" prop="id" />
       <el-table-column label="申请状态" align="center" prop="start" >
         <template slot-scope="scope">
           <div v-if="scope.row.start == '协商' " > 协商 <el-button size="mini" type="primary" @click="xieShan(scope.row)">查 看</el-button> </div>
           <div v-else>
-            {{scope.row.start}}
+            <el-tag :type="scope.row.start | statusFilter">
+              {{ scope.row.start }}
+            </el-tag>
           </div>
         </template>
       </el-table-column>
@@ -50,19 +53,12 @@
       </template>
       </el-table-column>
       <el-table-column  label="附件" align="center"  class-name="small-padding fixed-width">
-        <template slot-scope="scope" v-if="scope.row.stioReason != null">
+        <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="downloadFujian(scope.row.stioReason)"
           >下载附件</el-button>
-        </template>
-
-        <template slot-scope="scope" v-if="scope.row.stioReason == null">
-        <div>
-          <strong>暂无附件</strong>
-        </div>
         </template>
       </el-table-column>
       <el-table-column label="所属学院" align="center" prop="stioAcademy" />
@@ -70,50 +66,34 @@
       <el-table-column  label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.start == '待审批'||scope.row.start == '协商'">
           <el-button
-
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
+            size="small"
+            type="primary"
             @click="pass(scope.row)"
           >通过</el-button>
           <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
+            size="small"
+            type="danger"
             @click="juJueDig(scope.row)"
           >拒绝</el-button>
-
-        </template>
-        <template slot-scope="scope" v-if="scope.row.start == '通过'">
-          <div>
+          <div v-if="scope.row.start == '通过' ">
             <strong>不可操作</strong>
           </div>
         </template>
       </el-table-column>
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-
-
         <template slot-scope="scope" v-if="scope.row.start == '待审批'||scope.row.start == '协商'">
-
           <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
+            size="small"
+            type="success"
             @click="xieShang(scope.row)"
           >协商</el-button>
 
           <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
+            size="small"
+            type="warning"
             @click="bohui(scope.row)"
           >驳回</el-button>
-        </template>
-        <template slot-scope="scope" v-if="scope.row.start == '通过'">
-          <div>
-            <strong>不可操作</strong>
-          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -187,6 +167,17 @@ import {downloadFujian} from "@/utils/request";
 import { listUsers} from "@/api/system/user";
 export default {
   name: "Stio",
+  dicts: ['sys_state'],
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        '待审批': 'primary',
+        '拒绝': 'danger',
+        '协商': 'success'
+      }
+      return statusMap[status]
+    }
+  },
   data() {
     return {
       listUsers:'',
