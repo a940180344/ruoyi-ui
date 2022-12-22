@@ -7,12 +7,12 @@
           <strong v-if="item.start == '拒绝'" style="color: red;font-size: larger">{{ item.start }}</strong>
           <strong v-if="item.start == '驳回'" style="color: chocolate;font-size: larger">
               {{ item.start }}
-            <el-button size="mini" type="primary" @click="sQing(item)">重新发起申请</el-button>
+            <el-button size="mini" type="primary" @click="sQing(item.id)">重新发起申请</el-button>
           </strong>
 
           <strong v-if="item.start == '协商'" style="color: cyan;font-size: larger">
             {{ item.start }}
-            <el-button size="mini" type="primary" @click="addXs(item)">查 看</el-button>
+            <el-button size="mini" type="primary" @click="addXs(item)">发 起</el-button>
           </strong>
 
           <strong v-if="item.start == '待审批'" style="color: orange;font-size: larger">{{ item.start }}</strong>
@@ -63,6 +63,37 @@
         </el-timeline-item>
       </el-timeline>
     </el-dialog>
+
+    <el-dialog title="重新提交" :visible.sync="chongXinTiJiao" width="800px" append-to-body>
+      <el-form ref="formStudio" :model="formStudio" :rules="rules" label-width="80px">
+
+        <el-form-item label="所属学院" prop="stioAcademy">
+          <el-input v-model="formStudio.stioAcademy" placeholder="请输入所属学院" />
+        </el-form-item>
+
+        <el-form-item label="工作室名" prop="stioName">
+          <el-input v-model="formStudio.stioName" placeholder="请输入工作室名" />
+        </el-form-item>
+
+        <el-form-item label="工作室所属老师" prop="stioTeacher">
+          <el-input v-model="formStudio.stioTeacher" placeholder="请输入工作室所属老师" />
+        </el-form-item>
+
+        <el-form-item label="其他说明">
+          <el-input v-model="formStudio.stioShuoming" placeholder="" />
+        </el-form-item>
+
+        <el-form-item label="工作室类型">
+          <el-input v-model="formStudio.stioType" placeholder="" />
+        </el-form-item>
+
+        <el-form-item label="申请理由">
+          <file-upload v-model="formStudio.stioReason" ref="upload" />
+        </el-form-item>
+      </el-form>
+      <el-button @click="chongXinTiJiao = false">取 消</el-button>
+      <el-button type="primary" @click="submitStudioForm">提 交</el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -71,10 +102,22 @@ import { listXs, getXs, delXs, addXs, updateXs } from "@/api/applications/xs/xs"
 import {roleJiaoWu,studioAppInfo} from "@/api/applications/process";
 import {downloadFujian} from "@/utils/request";
 import { listUsers} from "@/api/system/user";
+import { getStudio,updateStio } from '@/api/dept/stuPcosee'
 export default {
 
   data() {
     return {
+      chongXinTiJiao:false,
+      formStudio: {
+        hostId:null,
+        stioAcademy:"人工智能学院",
+        stioName:"xunl工作室",
+        stioTeacher:"",
+        stioReason:'',
+        stioShuoming:null,
+        stioType:null,
+        ll:""
+      },
       listUsers:'',
       rules: {
 
@@ -157,8 +200,6 @@ export default {
       const studioDate = await studioAppInfo();
       this.list = studioDate.data
 
-      const jiaoWuDate = await roleJiaoWu();
-      this.jiaoWu = jiaoWuDate.data
       listUsers().then(res=>{
         this.listUsers = res.rows
       })
@@ -171,8 +212,19 @@ export default {
       this.form.hostId = row.hostId;
       this.open = true;
     },
-    sQing(item){
-      console.log(item)
+    sQing(id){
+      console.log(id)
+      getStudio(id).then(res=>{
+        this.formStudio = res.data
+        this.chongXinTiJiao = true;
+      })
+
+    },
+    submitStudioForm(){
+      updateStio(this.formStudio).then(res=>{
+        this.chongXinTiJiao = false;
+        this.getList();
+      })
     },
     download( fujian ){
       var fujians = fujian.split(",")
@@ -188,11 +240,14 @@ export default {
 * */
     getChangestudentId(userId){
       let studentName ;
+
+
       for (let student of this.listUsers){
         if (student.userId == userId){
           studentName = student.nickName
         }
       }
+      console.log(studentName)
       return studentName
     },
     // 表单重置
@@ -249,9 +304,8 @@ export default {
 
       listXs(this.queryParams).then(response => {
 
-        this.Xieopen = true;
-        console.log(response)
         this.stioList = response.rows;
+        this.Xieopen = true;
       });
     },
     /** 删除按钮操作 */

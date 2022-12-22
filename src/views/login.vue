@@ -1,8 +1,5 @@
 <template>
   <div id="login">
-    <el-button @click="dianji(5)">
-      dianwoowowo
-    </el-button>
     <el-container>
 
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"

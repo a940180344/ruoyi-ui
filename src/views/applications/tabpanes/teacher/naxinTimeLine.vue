@@ -7,7 +7,7 @@
           <strong v-if="item.start == '拒绝'" style="color: red;font-size: larger">{{ item.start }}</strong>
           <strong v-if="item.start == '驳回'" style="color: chocolate;font-size: larger">
             {{ item.start }}
-            <el-button size="mini" type="primary" @click="sQing(item)">重新发起申请</el-button>
+            <el-button size="mini" type="primary" @click="sQing(item.id)">重新发起申请1</el-button>
           </strong>
 
           <strong v-if="item.start == '协商'" style="color: cyan;font-size: larger">
@@ -47,7 +47,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="title" :visible.sync="Xieopen" width="800px" append-to-body>
+    <el-dialog title="协商" :visible.sync="Xieopen" width="800px" append-to-body>
       <el-timeline>
         <el-timeline-item v-for="(item) of stioList" :key="item.xsId" :timestamp="item.createTime" placement="top">
           <el-card>
@@ -60,15 +60,17 @@
         </el-timeline-item>
       </el-timeline>
     </el-dialog>
+
+
   </div>
 </template>
 
 <script>
 import { listXs, getXs, delXs, addXs, updateXs } from "@/api/applications/xs/xs";
-import {studioAppInfo} from "@/api/applications/process";
 import {downloadFujian} from "@/utils/request";
 import { listDept } from '@/api/system/dept'
 import { listUsers} from "@/api/system/user";
+import {getStudio} from "@/api/dept/stuPcosee"
 export default {
 
   props: {
@@ -76,6 +78,8 @@ export default {
   },
   data() {
     return {
+
+      chongXinTiJiao:false,
       listUsers:'',
       rules: {
 
@@ -172,10 +176,12 @@ export default {
       this.form.hostId = row.hostId;
       this.open = true;
     },
-    sQing(item){
-      console.log(item)
-    },
+    sQing(id){
 
+    },
+    submitStudioForm(){
+
+    },
     download( fujian ){
       var fujians = fujian.split(",")
       for (const argument of fujians) {

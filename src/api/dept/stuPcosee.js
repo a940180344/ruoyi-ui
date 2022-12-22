@@ -62,16 +62,22 @@ export function Pass(data) {
     data: data
   })
 }
+// 查询项目纳新详细
+export function getStudio(Id) {
+  return request({
+    url: '/studio/application/' + Id,
+    method: 'get'
+  })
+}
 
-
-// // 修改studio
-// export function updateStio(data) {
-//   return request({
-//     url: '/studio/application/',
-//     method: 'put',
-//     data: data
-//   })
-// }
+// 修改studio
+export function updateStio(data) {
+  return request({
+    url: '/studio/application/',
+    method: 'put',
+    data: data
+  })
+}
 
 // // 删除studio
 // export function delStio(id) {

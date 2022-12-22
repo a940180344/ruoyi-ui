@@ -277,6 +277,7 @@ export default {
       addXs(this.XieSForm).then(response => {
         this.$modal.msgSuccess("提交成功");
         this.openXies = false;
+        this.getList();
       });
     },
     /*用户字典
