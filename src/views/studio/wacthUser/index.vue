@@ -118,6 +118,7 @@
           <dict-tag :options="dict.type.sys_xue_yuan" :value="scope.row.academy"/>
         </template>
       </el-table-column>
+<!--      <el-table-column label="学院2" align="center" prop="academy" />-->
       <el-table-column label="年级" align="center" prop="grade" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -188,6 +189,7 @@
               :value="dict.value"
             ></el-option>
           </el-select>
+
         </el-form-item>
         <el-form-item label="年级" prop="grade">
           <el-input v-model="form.grade" placeholder="请输入年级" />

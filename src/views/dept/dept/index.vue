@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="medium" :inline="true" v-show="showSearch" label-width="75px" style="text-align: center">
-      <el-form-item label="部门名称" prop="deptName">
+    <el-form :model="queryParams" ref="queryForm" size="medium" :inline="true" v-show="showSearch" label-width="90px" style="text-align: center">
+      <el-form-item label="工作室名称" prop="deptName">
         <el-input
           v-model="queryParams.deptName"
-          placeholder="请输入部门名称1"
+          placeholder="请输入部门名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -39,13 +39,13 @@
 
     <el-table v-loading="loading" :data="deptList" @row-dblclick="DetailStudio" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="部门id" align="center" prop="deptId" />
-      <el-table-column label="部门名称" align="center" prop="deptName" />
+      <el-table-column label="工作室id" align="center" prop="deptId" />
+      <el-table-column label="工作室名称" align="center" prop="deptName" />
       <el-table-column label="显示顺序" align="center" prop="orderNum" />
       <el-table-column label="老师负责人" align="center" prop="leader" />
       <el-table-column label="联系电话" align="center" prop="phone" />
       <el-table-column label="邮箱" align="center" prop="email" />
-      <el-table-column label="部门状态" align="center" prop="status" />
+      <el-table-column label="工作室状态" align="center" prop="status" />
       <el-table-column label="工作室简介" align="center" prop="introduction" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
