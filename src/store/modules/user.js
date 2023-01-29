@@ -15,7 +15,8 @@ const user = {
     serverAddress: "http://localhost:20100",
     academy:'',
     grade:'',
-    translation:""
+    translation:"",
+    xuey:[{法学院:"法学院",chlid:["a专业","b专业"]},{人工智能学院:"人工智能学院",chlid:["计算机专业","自动化专业"]}]
   },
 
   mutations: {

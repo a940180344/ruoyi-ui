@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="medium" :inline="true" v-show="showSearch" label-width="75px" style="text-align: center">
       <el-form-item label="部门名称" prop="deptName">
         <el-input
           v-model="queryParams.deptName"
@@ -50,6 +50,8 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
+            v-if="scope.row.deptName != '教务' && scope.row.deptName != '院长' && !scope.row.deptName.includes('人工智能学院')"
+
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -270,8 +272,20 @@ export default {
     async getList() {
       this.loading = true;
       listDept(this.queryParams).then(response => {
+        this.deptList = ""
         this.deptList = response.rows;
         this.total = response.total;
+
+
+        for (let i = 0 ; i < this.deptList.length; i++) {
+
+          console.log( this.deptList.length)
+          if (this.deptList[i].deptName.indexOf("工作室") == -1){
+            this.deptList.splice(i,1)
+
+          }
+
+        }
         this.loading = false;
       });
       const dateUser = await getUserProfile();

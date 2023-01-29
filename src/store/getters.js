@@ -23,5 +23,6 @@ const getters = {
   academy:state => state.user.academy,
   grade:state => state.user.grade,
   translation:state => state.user.translation,
+  xuey:state => state.user.xuey,
 }
 export default getters
