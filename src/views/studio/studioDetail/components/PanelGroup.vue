@@ -10,7 +10,7 @@
             工作室总人数
 <!--            这个工作室的-->
           </div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="11" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -58,14 +58,25 @@
 
 <script>
 import CountTo from 'vue-count-to'
-
+import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from "@/api/system/dept";
 export default {
   components: {
-    CountTo
+    CountTo,
+    form:{
+    },
+  },
+  created() {
+    this.gegetDeptXq()
   },
   methods: {
     handleSetLineChartData(type) {
       this.$emit('handleSetLineChartData', type)
+    },
+    gegetDeptXq(){
+      getDept(this.studioId).then(res=>{
+        this.form = res.data
+        console.log(res.data.data)
+      })
     }
   }
 }

@@ -33,7 +33,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['essay:essay:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -112,7 +111,7 @@
     <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="内容">
-          <editor v-model="form.essayContent" :min-height="192"/>
+          <editor style="z-index: 999999" v-model="form.essayContent" :min-height="192"/>
         </el-form-item>
         <el-form-item label="标题" prop="essayTitle">
           <el-input v-model="form.essayTitle" placeholder="请输入标题" />

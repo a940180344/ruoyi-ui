@@ -1,27 +1,11 @@
 <template>
   <div class="app-container">
-    <el-col :span="6" :xs="24">
-      <user-card :user="user" />
-    </el-col>
-    <el-col :span="16" :xs="24" style="float: right;">
-      <el-card>
-        <el-tabs v-model="activeTab">
-          <el-tab-pane label="以往申请次数" name="timeline">
-            <timeline />
-          </el-tab-pane>
-          <el-tab-pane label="第一次申请" name="activity一">
-            <activity />
-          </el-tab-pane>
-          <el-tab-pane label="第二次申请" name="activity二">
-            <activity />
-          </el-tab-pane>
-          <el-tab-pane label="本次申请" name="activity本">
-            <activity />
-          </el-tab-pane>
-        </el-tabs>
+    <div style="margin-left: 600px">
+      <el-col :span="10" :xs="24">
+        <user-card :user="user" />
+      </el-col>
+    </div>
 
-      </el-card>
-    </el-col>
   </div>
 </template>
 

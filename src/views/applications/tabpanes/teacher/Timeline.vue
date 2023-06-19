@@ -87,6 +87,7 @@
           <el-input v-model="formStudio.stioType" placeholder="" />
         </el-form-item>
 
+
         <el-form-item label="申请理由">
           <file-upload v-model="formStudio.stioReason" ref="upload" />
         </el-form-item>

@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import { listUser, getUser, delUser, addUser, updateUser,exportUser } from "@/api/system/user";
+import { listUser, getUser, delUser, addUser, updateUser,exportUser,dept } from "@/api/system/user";
 
 export default {
   name: "User",
@@ -256,7 +256,7 @@ export default {
     /** 查询用户信息列表 */
     getList() {
       this.loading = true;
-      listUser(this.queryParams).then(response => {
+        dept(this.queryParams).then(response => {
         this.userList = response.rows;
         this.total = response.total;
         this.loading = false;

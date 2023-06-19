@@ -88,7 +88,17 @@
         {{getChangestudentId(scope.row.stioTeacher)}}
       </template>
       </el-table-column>
-      <el-table-column label="申请理由" align="center" prop="stioReason" />
+      <el-table-column label="文件" align="center" prop="wenjian" >
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            @click="
+
+downloadFujian(scope.row.wenjian)"
+          >下载附件</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="所属学院" align="center" prop="stioAcademy" />
       <el-table-column label="修改意见" align="center" prop="stioOpinion" />
       <el-table-column label="审批人" align="center" prop="stioAppover" >
@@ -170,6 +180,7 @@
 <script>
 import { listStio,addStio } from "@/api/dept/stuPcosee";
 import { listUsers} from "@/api/system/user";
+import { downloadFujian } from '@/utils/request'
 export default {
   name: "Stio",
   data() {
@@ -217,6 +228,9 @@ export default {
         }
       }
       return studentName
+    },
+    downloadFujian(fujian){
+      downloadFujian(fujian);
     },
     /** 查询studio列表 */
     getList() {

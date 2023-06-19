@@ -76,6 +76,9 @@ export default {
       }, {
         value: '102',
         label: '学生组长'
+      }, {
+        value: '101',
+        label: '老师'
       }],
 
       dialogVisible: false,
@@ -217,9 +220,10 @@ export default {
 
       let length = this.treeData.lists.length
       let userId
+      console.log(this.treeData.lists)
       let row = {
         id:length,
-        host_id:this.treeData.lists[0].hostId,
+        hostId:this.treeData.lists[0].hostId,
         order:length,
         name:this.caiDan,
         roleId: this.value,

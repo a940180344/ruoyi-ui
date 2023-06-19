@@ -101,51 +101,34 @@
       <el-table-column  label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.start == '待审批'||scope.row.start == '协商'">
           <el-button
-
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
+            size="small"
+            type="primary"
             @click="pass(scope.row)"
           >通过</el-button>
           <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
+            size="small"
+            type="danger"
             @click="juJueDig(scope.row)"
           >拒绝</el-button>
-
-        </template>
-        <template slot-scope="scope" v-if="scope.row.start == '通过'">
-          <div>
-            <strong style="color: red">不可操作</strong>
+          <div v-if="scope.row.start == '通过' ">
+            <strong>不可操作</strong>
           </div>
         </template>
       </el-table-column>
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-
-
         <template slot-scope="scope" v-if="scope.row.start == '待审批'||scope.row.start == '协商'">
-
           <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
+            size="small"
+            type="success"
             @click="xieShang(scope.row)"
           >协商</el-button>
 
           <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
+            size="small"
+            type="warning"
             @click="bohui(scope.row)"
           >驳回</el-button>
-
-        </template>
-        <template slot-scope="scope" v-if="scope.row.start == '通过'">
-          <div>
-            <strong style="color: red">不可操作</strong>
-          </div>
         </template>
       </el-table-column>
       <el-table-column>

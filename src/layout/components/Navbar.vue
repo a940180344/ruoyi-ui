@@ -7,14 +7,32 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-
         <el-popover
           placement="right"
-          width="400"
+          width="600"
           trigger="click">
-          <todo-list />
+          <el-table v-loading="loading" :data="list">
+            <el-table-column width="120" property="fasonguser" label="发送人" />
+            <el-table-column width="180" property="createTime" label="发送时间">
+            </el-table-column>
+            <el-table-column property="content" label="内容" />
+            <el-table-column>
+              <template slot-scope="scope">
+                <el-button  size="mini" @click="handleAdd(scope.row.fasonguser)" type="text">回复</el-button>
+              </template>
+            </el-table-column>
+            <el-table-column label="文件" align="center" prop="wenjian" >
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="text"
+                  @click="downloadFujian(scope.row.wenjian)"
+                >下载附件</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
-          <i style="height: 32px;cursor:pointer;" slot="reference"  class="el-icon-message-solid right-menu-item"></i>
+          <i @click="getUser" style="height: 32px;cursor:pointer;" slot="reference"  class="el-icon-message-solid right-menu-item"></i>
         </el-popover>
 
         <search id="header-search" class="right-menu-item" />
@@ -31,7 +49,21 @@
         </el-tooltip>
 
       </template>
-
+      <!-- 添加或修改email对话框 -->
+      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item label="接收人" prop="jieshouuser">
+            <el-input v-model="form.jieshouuser" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="内容" prop="content">
+            <el-input v-model="form.content" type="textarea" placeholder="请输入内容" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </el-dialog>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar" class="user-avatar">
@@ -57,6 +89,8 @@
 </template>
 
 <script>
+import { listEmail, getEmail, delEmail, addEmail, updateEmail } from "@/api/email/email";
+
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import TopNav from '@/components/TopNav'
@@ -67,6 +101,8 @@ import Search from '@/components/HeaderSearch'
 import RuoYiGit from '@/components/RuoYi/Git'
 import RuoYiDoc from '@/components/RuoYi/Doc'
 import TodoList from "@/layout/components/conts/TodoList"
+import { listUser } from '@/api/system/user'
+import { downloadFujian } from '@/utils/request'
 export default {
   components: {
     Breadcrumb,
@@ -79,11 +115,27 @@ export default {
     RuoYiDoc,
     TodoList
   },
+  data(){
+    return{
+      list:"",
+      form: {},
+      open:false
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'name',
+      'avatar',
+      'roles',
+      'studentID',//学号
+      'deptID',
+      'deptName',
+      'academy',
+      'grade',
+      'translation',
     ]),
     setting: {
       get() {
@@ -103,6 +155,70 @@ export default {
     }
   },
   methods: {
+    downloadFujian(fujian){
+      downloadFujian(fujian);
+    },
+    submitForm() {
+      this.form.fasonguser = this.name
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.id != null) {
+            updateEmail(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            addEmail(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
+      });
+    },
+    handleAdd(user) {
+
+      this.reset();
+      this.form.jieshouuser = user
+      this.open = true;
+      this.title = "添加email";
+    },
+    reset() {
+      this.form = {
+        id: null,
+        fasonguser: null,
+        jieshouuser: null,
+        content: null,
+        createBy: null,
+        createTime: null
+      };
+      this.resetForm("form");
+    },
+    getUser(){
+      let queryParam= {
+        pageNum: 1,
+        pageSize: 10,
+        fasonguser: null,
+        jieshouuser: "全部",
+        content: null,
+      }
+     let queryParams= {
+          pageNum: 1,
+          pageSize: 10,
+          fasonguser: null,
+          jieshouuser: this.name,
+          content: null,
+      }
+      listEmail(queryParams).then(res =>{
+        this.list = res.rows
+        listEmail(queryParam).then(res =>{
+          this.list = this.list.concat(res.rows)
+          this.loading = false
+        })
+      })
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },

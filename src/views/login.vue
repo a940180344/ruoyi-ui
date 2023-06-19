@@ -247,7 +247,7 @@ export default {
           if (argument.essayTag == "工作室新闻"){
             this.menu4List.push(argument)
           }
-          if (argument.essayTag == "工作室动态"){
+          if (argument.essayTag == "工作室公告"){
             this.menu2List.push(argument)
           }
           if (argument.essayTag == "公告通知"){

@@ -19,3 +19,16 @@ export default  {
     }
 }
 </script>
+<style>
+.navbar-static-side {
+  background: #2f4050;
+}
+
+nav .logo {
+  background-color: #367fa9;
+}
+/** 蓝色主题 skin-blue **/
+.navbar, .skin-blue .navbar {
+  background-color: #3c8dbc
+}
+</style>

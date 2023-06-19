@@ -9,8 +9,8 @@
         <img style="border-radius: 30px; width:60px;height:60px;" src="https://p26-passport.byteacctimg.com/img/user-avatar/2888e76b28ca6113c08f49230be7d3c6~300x300.image" alt="">
       </div>
       <div class="box-center">
-        <div class="user-name text-center">{{ form.nickName }}</div>
-        <div class="user-role text-center text-muted">{{ form.remark | uppercaseFirst }}</div>
+        <div class="user-name text-center">演示学生</div>
+        <div class="user-role text-center text-muted">学生</div>
       </div>
     </div>
 

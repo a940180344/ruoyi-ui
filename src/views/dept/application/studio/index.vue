@@ -1,9 +1,9 @@
 <template>
  <div class="app-container">
-   <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+   <el-form style="width: 600px;margin-left: 30%" ref="form" :model="form" :rules="rules" label-width="80px">
 
      <el-form-item label="所属学院" prop="stioAcademy">
-       <el-input v-model="form.stioAcademy" placeholder="请输入所属学院" />
+       <el-input :disabled="true" v-model="form.stioAcademy" placeholder="请输入所属学院" />
      </el-form-item>
 
      <el-form-item label="工作室名" prop="stioName">
@@ -19,14 +19,21 @@
      </el-form-item>
 
      <el-form-item label="工作室类型">
-       <el-input v-model="form.stioType" placeholder="" />
+       <el-select v-model="form.stioType" placeholder="请选择">
+         <el-option
+           v-for="item in options"
+           :key="item.value"
+           :label="item.label"
+           :value="item.value">
+         </el-option>
+       </el-select>
      </el-form-item>
 
      <el-form-item label="申请理由">
        <file-upload v-model="form.stioReason" ref="upload" />
      </el-form-item>
    </el-form>
-   <el-button type="primary" @click="submitForm">提 交</el-button>
+   <el-button style="margin-left: 30%" type="primary" @click="submitForm">提 交</el-button>
   </div>
   </template>
 <script>
@@ -38,7 +45,13 @@ export default{
   data() {
     return {
       arlDictionary:'',
-
+      options:[{
+        value: '应用型',
+        label: '应用型'
+      }, {
+        value: '理论型',
+        label: '理论型'
+      }],
 
       // 遮罩层
       loading: true,
@@ -68,7 +81,7 @@ export default{
       form: {
         hostId:null,
         stioAcademy:"人工智能学院",
-        stioName:"xunl工作室",
+        stioName:"",
         stioTeacher:"",
         stioReason:'',
         stioShuoming:null,
